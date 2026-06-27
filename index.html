@@ -9,437 +9,569 @@
 <title>גן החיות של נלי</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
-
   html, body { height:100%; font-family:"Varela Round",-apple-system,"Segoe UI",system-ui,sans-serif; overflow:hidden; }
-
   body {
-    height:100dvh;
-    display:flex; flex-direction:column;
-    background:linear-gradient(180deg, #7ec8ff 0%, #aee3ff 45%, #d8f5b0 72%, #9be86a 100%);
-    touch-action:manipulation;
-    position:relative;
+    height:100dvh; display:flex; flex-direction:column;
+    background:linear-gradient(180deg,#7ec8ff 0%,#aee3ff 45%,#d8f5b0 72%,#9be86a 100%);
+    touch-action:manipulation; position:relative;
   }
 
-  /* ---------- רקע מונפש: שמש, עננים, דשא ---------- */
+  /* ---------- רקע ---------- */
   .bg { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
-  .sun {
-    position:absolute; top:8px; left:14px;
-    width:64px; height:64px; border-radius:50%;
-    background:radial-gradient(circle at 40% 40%, #fff3a8, #ffd93d);
-    box-shadow:0 0 26px 10px rgba(255,217,61,.6);
-    animation:spin 30s linear infinite;
-  }
+  .sun { position:absolute; top:8px; left:14px; width:64px; height:64px; border-radius:50%;
+    background:radial-gradient(circle at 40% 40%,#fff3a8,#ffd93d);
+    box-shadow:0 0 26px 10px rgba(255,217,61,.6); animation:spin 30s linear infinite; }
   .sun::before { content:""; position:absolute; inset:-12px; border-radius:50%;
-    background:repeating-conic-gradient(rgba(255,217,61,.5) 0 8deg, transparent 8deg 22deg); z-index:-1; }
+    background:repeating-conic-gradient(rgba(255,217,61,.5) 0 8deg,transparent 8deg 22deg); z-index:-1; }
   @keyframes spin { to { transform:rotate(360deg); } }
-
   .cloud { position:absolute; background:#fff; border-radius:50px; opacity:.92;
     filter:drop-shadow(0 6px 8px rgba(0,0,0,.06)); }
-  .cloud::before, .cloud::after { content:""; position:absolute; background:#fff; border-radius:50%; }
+  .cloud::before,.cloud::after { content:""; position:absolute; background:#fff; border-radius:50%; }
   .c1 { width:90px; height:30px; top:60px; animation:drift1 26s linear infinite; }
   .c1::before { width:42px; height:42px; top:-18px; left:14px; }
   .c1::after  { width:30px; height:30px; top:-12px; left:48px; }
   .c2 { width:70px; height:24px; top:130px; opacity:.8; animation:drift2 34s linear infinite; }
   .c2::before { width:34px; height:34px; top:-14px; left:10px; }
   .c2::after  { width:26px; height:26px; top:-9px; left:40px; }
-  @keyframes drift1 { from{ right:-120px; } to{ right:110%; } }
-  @keyframes drift2 { from{ right:-100px; } to{ right:110%; } }
-
+  @keyframes drift1 { from{right:-120px} to{right:110%} }
+  @keyframes drift2 { from{right:-100px} to{right:110%} }
   .hills { position:absolute; bottom:0; left:0; width:100%; height:120px;
-    background:radial-gradient(120% 80px at 25% 100%, #7bd35a 60%, transparent 61%),
-               radial-gradient(120% 90px at 80% 100%, #6cc94d 60%, transparent 61%); }
+    background:radial-gradient(120% 80px at 25% 100%,#7bd35a 60%,transparent 61%),
+               radial-gradient(120% 90px at 80% 100%,#6cc94d 60%,transparent 61%); }
 
-  /* ---------- שכבת תוכן ---------- */
-  header, .stage, .counter, .all-btn { position:relative; z-index:1; }
-
+  /* ---------- תוכן ---------- */
+  header,.stage,.counter,.all-btn { position:relative; z-index:1; }
   header { flex:0 0 auto; text-align:center; padding:12px 10px 4px; }
   header h1 {
-    font-size:clamp(26px,7.5vw,42px); color:#fff; font-weight:800; letter-spacing:1px;
-    text-shadow:0 3px 0 #ff9ec4, 0 4px 0 #f17fad, 0 0 16px rgba(255,255,255,.5);
+    font-size:clamp(24px,7vw,40px); color:#fff; font-weight:800; letter-spacing:1px;
+    text-shadow:0 3px 0 #ff9ec4,0 4px 0 #f17fad,0 0 16px rgba(255,255,255,.5);
   }
-  header h1 .paw { font-size:.85em; }
+  .paw { font-size:.85em; }
 
   .stage { flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:6px 12px; min-height:0; }
 
   .card {
     --tint:#fff3c4;
-    background:linear-gradient(180deg, #ffffff 0%, var(--tint) 100%);
-    border:5px solid #fff;
-    border-radius:38px;
-    box-shadow:0 16px 0 rgba(0,0,0,.07), 0 18px 36px rgba(60,60,120,.25);
-    width:100%; max-width:440px; padding:14px 16px 20px;
+    background:linear-gradient(180deg,#ffffff 0%,var(--tint) 100%);
+    border:5px solid #fff; border-radius:38px;
+    box-shadow:0 16px 0 rgba(0,0,0,.07),0 18px 36px rgba(60,60,120,.25);
+    width:100%; max-width:440px; padding:14px 16px 18px;
     text-align:center; position:relative;
-    display:flex; flex-direction:column; align-items:center; gap:4px;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
     transition:background .35s;
   }
 
-  .emoji {
-    font-size:clamp(96px,30vw,168px); line-height:1.02;
-    filter:drop-shadow(0 12px 10px rgba(0,0,0,.18));
-    cursor:pointer; position:relative;
+  /* ---------- תמונת החיה ---------- */
+  .animal-view {
+    position:relative;
+    width:min(220px,58vw); height:min(220px,58vw);
+    border-radius:26px; overflow:hidden;
+    background:rgba(0,0,0,.04);
+    cursor:pointer; flex-shrink:0;
+    box-shadow:0 8px 20px rgba(0,0,0,.14);
   }
-  .emoji.pop    { animation:pop .55s cubic-bezier(.2,.9,.3,1.4); }
-  .emoji.wiggle { animation:wiggle .5s ease; }
+  .animal-photo {
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; border-radius:22px;
+    opacity:0; transition:opacity .4s;
+  }
+  .animal-photo.show { opacity:1; }
+  .animal-emoji {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:clamp(80px,24vw,140px); line-height:1;
+    filter:drop-shadow(0 8px 8px rgba(0,0,0,.15));
+    transition:opacity .3s;
+  }
+  .animal-photo.show + .animal-emoji { opacity:0; }
+
+  .animal-view.pop    { animation:pop .55s cubic-bezier(.2,.9,.3,1.4); }
+  .animal-view.wiggle { animation:wiggle .5s ease; }
   @keyframes pop {
-    0%{ transform:scale(.3) rotate(-14deg); opacity:0; }
-    60%{ transform:scale(1.18) rotate(7deg); }
-    100%{ transform:scale(1) rotate(0); opacity:1; }
+    0%{transform:scale(.3) rotate(-14deg);opacity:0}
+    60%{transform:scale(1.18) rotate(7deg)}
+    100%{transform:scale(1) rotate(0);opacity:1}
   }
-  @keyframes wiggle { 0%,100%{ transform:rotate(0);} 25%{ transform:rotate(-10deg) scale(1.08);} 75%{ transform:rotate(10deg) scale(1.08);} }
+  @keyframes wiggle {
+    0%,100%{transform:rotate(0)}
+    25%{transform:rotate(-10deg) scale(1.08)}
+    75%{transform:rotate(10deg) scale(1.08)}
+  }
 
-  .name-he { font-size:clamp(32px,9vw,48px); font-weight:800; color:#3a3a5a; }
-  .name-en { font-size:clamp(20px,6vw,30px); font-weight:700; color:#ff5d9e; direction:ltr; letter-spacing:.5px; }
+  .name-he { font-size:clamp(28px,8vw,44px); font-weight:800; color:#3a3a5a; }
+  .name-en { font-size:clamp(18px,5.5vw,28px); font-weight:700; color:#ff5d9e; direction:ltr; }
 
-  /* ---------- כפתורי פעולה ---------- */
-  .actions { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; justify-content:center; }
+  /* ---------- כפתורים ---------- */
+  .actions { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; justify-content:center; }
   .btn {
     border:none; font-family:inherit; font-weight:800; cursor:pointer;
-    border-radius:999px; padding:14px 20px; font-size:clamp(17px,4.6vw,21px);
+    border-radius:999px; padding:13px 18px; font-size:clamp(16px,4.4vw,20px);
     display:inline-flex; align-items:center; gap:8px;
-    transition:transform .08s, box-shadow .08s;
+    transition:transform .08s,box-shadow .08s;
   }
   .btn:active { transform:translateY(5px); }
-  .btn-sound {
-    background:linear-gradient(180deg,#ffd93d,#ffae3b); color:#7a4d00;
-    box-shadow:0 7px 0 #e0921f, 0 10px 16px rgba(0,0,0,.18);
-  }
+  .btn-sound { background:linear-gradient(180deg,#ffd93d,#ffae3b); color:#7a4d00;
+    box-shadow:0 7px 0 #e0921f,0 10px 16px rgba(0,0,0,.18); }
   .btn-sound:active { box-shadow:0 2px 0 #e0921f; }
-  .btn-say {
-    background:linear-gradient(180deg,#6fe3ff,#3bb6ff); color:#054a73;
-    box-shadow:0 7px 0 #1f8fd0, 0 10px 16px rgba(0,0,0,.18);
-  }
+  .btn-say { background:linear-gradient(180deg,#6fe3ff,#3bb6ff); color:#054a73;
+    box-shadow:0 7px 0 #1f8fd0,0 10px 16px rgba(0,0,0,.18); }
   .btn-say:active { box-shadow:0 2px 0 #1f8fd0; }
   .btn.playing { animation:pulse .7s ease infinite; }
-  @keyframes pulse { 0%,100%{ filter:brightness(1);} 50%{ filter:brightness(1.18);} }
+  @keyframes pulse { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.2)} }
 
   /* ---------- חצים ---------- */
   .nav { position:absolute; top:46%; left:0; width:100%; display:flex; justify-content:space-between;
     transform:translateY(-50%); pointer-events:none; padding:0 2px; }
-  .arrow {
-    pointer-events:auto; width:56px; height:56px; border:none; border-radius:50%;
-    background:#fff; box-shadow:0 5px 0 rgba(0,0,0,.12), 0 8px 16px rgba(0,0,0,.15);
-    font-size:24px; font-weight:800; color:#5b5b80; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-  }
+  .arrow { pointer-events:auto; width:54px; height:54px; border:none; border-radius:50%;
+    background:#fff; box-shadow:0 5px 0 rgba(0,0,0,.12),0 8px 16px rgba(0,0,0,.15);
+    font-size:22px; color:#5b5b80; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .arrow:active { transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.12); }
 
   .counter { flex:0 0 auto; text-align:center; color:#fff; font-weight:800; font-size:15px;
     padding:2px 0 4px; text-shadow:0 1px 2px rgba(0,0,0,.2); }
-
-  .all-btn {
-    flex:0 0 auto; margin:0 auto 12px; background:#fff; border:none; border-radius:999px;
-    padding:12px 26px; font-family:inherit; font-size:18px; font-weight:800; color:#3a3a5a;
-    box-shadow:0 6px 0 rgba(0,0,0,.12); cursor:pointer;
-  }
+  .all-btn { flex:0 0 auto; margin:0 auto 12px; background:#fff; border:none; border-radius:999px;
+    padding:11px 24px; font-family:inherit; font-size:17px; font-weight:800; color:#3a3a5a;
+    box-shadow:0 6px 0 rgba(0,0,0,.12); cursor:pointer; }
   .all-btn:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.12); }
 
   /* ---------- ניצוצות ---------- */
-  .spark { position:fixed; font-size:26px; pointer-events:none; z-index:60;
-    animation:spark .7s ease-out forwards; }
-  @keyframes spark { 0%{ transform:translate(0,0) scale(.4); opacity:1; }
-    100%{ transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(40deg); opacity:0; } }
+  .spark { position:fixed; font-size:26px; pointer-events:none; z-index:60; animation:spark .7s ease-out forwards; }
+  @keyframes spark {
+    0%{transform:translate(0,0) scale(.4);opacity:1}
+    100%{transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(40deg);opacity:0}
+  }
 
   /* ---------- מגירת כל החיות ---------- */
   .sheet { position:fixed; inset:0; background:rgba(40,40,80,.45); backdrop-filter:blur(3px);
     display:none; align-items:flex-end; z-index:50; }
   .sheet.open { display:flex; animation:fade .2s ease; }
-  @keyframes fade { from{ opacity:0; } to{ opacity:1; } }
+  @keyframes fade { from{opacity:0} to{opacity:1} }
   .sheet-inner { background:#fff; width:100%; max-height:82dvh; border-radius:30px 30px 0 0;
     padding:14px 14px 26px; overflow-y:auto; -webkit-overflow-scrolling:touch;
     animation:slideup .3s cubic-bezier(.2,.9,.3,1.1); }
-  @keyframes slideup { from{ transform:translateY(100%);} to{ transform:translateY(0);} }
+  @keyframes slideup { from{transform:translateY(100%)} to{transform:translateY(0)} }
   .sheet-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:0 6px; }
   .sheet-head h2 { font-size:24px; color:#3a3a5a; }
   .close-x { border:none; background:#ffe1ec; color:#ff5d8f; width:42px; height:42px;
     border-radius:50%; font-size:22px; font-weight:800; cursor:pointer; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(84px,1fr)); gap:10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:10px; }
   .tile { background:#f4f8ff; border:3px solid transparent; border-radius:22px; padding:10px 4px 8px;
     text-align:center; cursor:pointer; transition:transform .1s; }
   .tile:active { transform:scale(.9); }
   .tile.active { border-color:#ffae3b; background:#fff6e0; }
-  .tile .te { font-size:42px; line-height:1; }
+  .tile .te { font-size:40px; line-height:1; }
   .tile .tn { font-size:13px; font-weight:700; color:#3a3a5a; margin-top:3px; }
+
+  /* ---------- אינדיקטור טעינת קול ---------- */
+  #loadingDot {
+    position:absolute; top:8px; right:8px;
+    width:12px; height:12px; border-radius:50%;
+    background:#ffd93d; display:none;
+    animation:blink .6s ease infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 </style>
 </head>
 <body>
 
-  <div class="bg">
-    <div class="sun"></div>
-    <div class="cloud c1"></div>
-    <div class="cloud c2"></div>
-    <div class="hills"></div>
-  </div>
+<div class="bg">
+  <div class="sun"></div>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="hills"></div>
+</div>
 
-  <header><h1><span class="paw">🐾</span> גן החיות של נלי <span class="paw">🐾</span></h1></header>
+<header><h1><span class="paw">🐾</span> גן החיות של נלי <span class="paw">🐾</span></h1></header>
 
-  <div class="stage">
-    <div class="card" id="card">
-      <nav class="nav">
-        <button class="arrow" id="prev" aria-label="הקודם">▶</button>
-        <button class="arrow" id="next" aria-label="הבא">◀</button>
-      </nav>
-      <div class="emoji" id="emoji">🦁</div>
-      <div class="name-he" id="nameHe">אריה</div>
-      <div class="name-en" id="nameEn">Lion</div>
-      <div class="actions">
-        <button class="btn btn-sound" id="sound">🐾 איזה קול?</button>
-        <button class="btn btn-say" id="say">🔊 איך אומרים?</button>
-      </div>
+<div class="stage">
+  <div class="card" id="card">
+    <div id="loadingDot"></div>
+    <nav class="nav">
+      <button class="arrow" id="prev" aria-label="הקודם">▶</button>
+      <button class="arrow" id="next" aria-label="הבא">◀</button>
+    </nav>
+    <div class="animal-view" id="animalView">
+      <img class="animal-photo" id="animalPhoto" alt="">
+      <div class="animal-emoji" id="emoji">🦁</div>
+    </div>
+    <div class="name-he" id="nameHe">אַרְיֵה</div>
+    <div class="name-en" id="nameEn">Lion</div>
+    <div class="actions">
+      <button class="btn btn-sound" id="sound">🐾 איזה קול?</button>
+      <button class="btn btn-say" id="say">🔊 איך אומרים?</button>
     </div>
   </div>
+</div>
 
-  <div class="counter" id="counter"></div>
-  <button class="all-btn" id="openAll">🐘 כל החיות</button>
+<div class="counter" id="counter"></div>
+<button class="all-btn" id="openAll">🐘 כל החיות</button>
 
-  <div class="sheet" id="sheet">
-    <div class="sheet-inner">
-      <div class="sheet-head">
-        <h2>בחרו חיה 🦒</h2>
-        <button class="close-x" id="closeSheet">✕</button>
-      </div>
-      <div class="grid" id="grid"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-inner">
+    <div class="sheet-head">
+      <h2>בחרו חיה 🦒</h2>
+      <button class="close-x" id="closeSheet">✕</button>
     </div>
+    <div class="grid" id="grid"></div>
   </div>
+</div>
 
 <script>
-/* ===================== נתוני החיות ===================== */
-/* s = סוג הקול שהחיה עושה, p = פרמטרים, t = צבע רקע לכרטיס */
+/* ============================================================
+   נתוני החיות
+   f  = קובץ קול אמיתי (ב-sounds/)
+   s  = סינתטי (פולבק)
+   wiki = שם דף Wikipedia לתמונה
+============================================================ */
 const ANIMALS = [
-  { e:"🦁", he:"אַרְיֵה",     en:"Lion",      f:"lion.mp3",      t:"#ffe2a8" },
-  { e:"🐯", he:"נָמֵר",       en:"Tiger",     f:"tiger.mp3",     t:"#ffd9a8" },
-  { e:"🐘", he:"פִּיל",        en:"Elephant",  f:"elephant.mp3",  t:"#dcd6ee" },
-  { e:"🦒", he:"גִ'ירָפָה",    en:"Giraffe",   f:"giraffe.mp3",   t:"#fff0bf" },
-  { e:"🦓", he:"זֶבְּרָה",      en:"Zebra",     f:"zebra.mp3",     t:"#e8e8e8" },
-  { e:"🐒", he:"קוֹף",         en:"Monkey",    f:"monkey.mp3",    t:"#ffe0b8" },
-  { e:"🦍", he:"גּוֹרִילָה",    en:"Gorilla",   s:"roar",    p:{low:80,dur:0.9},   t:"#d7d7df" },
-  { e:"🐻", he:"דֹּב",         en:"Bear",      f:"bear.mp3",      t:"#e6cfb0" },
-  { e:"🐼", he:"פַּנְדָּה",      en:"Panda",     s:"squeak",  p:{soft:1},           t:"#eeeeee" },
-  { e:"🐨", he:"קוֹאָלָה",      en:"Koala",     s:"grunt",   p:{low:120},          t:"#dcdce4" },
-  { e:"🦘", he:"קֶנְגּוּרוּ",    en:"Kangaroo",  s:"grunt",   p:{low:150},          t:"#ffdcc0" },
-  { e:"🐊", he:"תַּנִּין",       en:"Crocodile", f:"crocodile.mp3", t:"#cfe8c0" },
-  { e:"🦛", he:"הִיפּוֹפּוֹטָם",  en:"Hippo",     s:"grunt",   p:{low:75,dur:0.5},   t:"#d8d2e2" },
-  { e:"🦏", he:"קַרְנַף",       en:"Rhino",     s:"grunt",   p:{low:90,dur:0.45},  t:"#dadada" },
-  { e:"🐍", he:"נָחָשׁ",        en:"Snake",     f:"snake.mp3",     t:"#d6ecc0" },
-  { e:"🦎", he:"לְטָאָה",       en:"Lizard",    f:"lizard.wav",    t:"#d2ecd0" },
-  { e:"🐢", he:"צָב",          en:"Turtle",    s:"squeak",  p:{soft:1,low:1},     t:"#cfe9d2" },
-  { e:"🦩", he:"פְלָמִינְגּוֹ",   en:"Flamingo",  f:"flamingo.wav",  t:"#ffd6e6" },
-  { e:"🦜", he:"תֻּכִּי",        en:"Parrot",    s:"tweet",   p:{},                 t:"#cfeede" },
-  { e:"🦚", he:"טַוָּס",        en:"Peacock",   f:"peacock.mp3",   t:"#cfe6ee" },
-  { e:"🦉", he:"יַנְשׁוּף",      en:"Owl",       f:"owl.mp3",       t:"#e0d6c4" },
-  { e:"🦅", he:"נֶשֶׁר",        en:"Eagle",     f:"eagle.mp3",     t:"#e2d6c8" },
-  { e:"🐧", he:"פִּינְגְּוִין",    en:"Penguin",   s:"squawk",  p:{hi:1},             t:"#d4e6f0" },
-  { e:"🦦", he:"לוּטְרָה",       en:"Otter",     s:"squeak",  p:{},                 t:"#dfe0d2" },
-  { e:"🦫", he:"בּוֹנֶה",        en:"Beaver",    s:"squeak",  p:{low:1},            t:"#e6d6c2" },
-  { e:"🦊", he:"שׁוּעָל",       en:"Fox",       f:"fox.mp3",       t:"#ffdcc0" },
-  { e:"🐺", he:"זְאֵב",         en:"Wolf",      f:"wolf.mp3",      t:"#d6dae4" },
-  { e:"🦌", he:"אַיָּל",        en:"Deer",      f:"deer.mp3",      t:"#e8d8c4" },
-  { e:"🐪", he:"גָּמָל",        en:"Camel",     s:"grunt",   p:{low:85,dur:0.7},   t:"#f0e2c2" },
-  { e:"🦔", he:"קִיפּוֹד",       en:"Hedgehog",  s:"squeak",  p:{},                 t:"#e6dcc8" },
+  { e:"🦁", he:"אַרְיֵה",      en:"Lion",       wiki:"Lion",                  f:"lion.mp3",      t:"#ffe2a8" },
+  { e:"🐯", he:"נָמֵר",        en:"Tiger",      wiki:"Tiger",                 f:"tiger.mp3",     t:"#ffd9a8" },
+  { e:"🐘", he:"פִּיל",         en:"Elephant",   wiki:"African elephant",      f:"elephant.mp3",  t:"#dcd6ee" },
+  { e:"🦒", he:"גִ'ירָפָה",     en:"Giraffe",    wiki:"Giraffe",               f:"giraffe.mp3",   t:"#fff0bf" },
+  { e:"🦓", he:"זֶבְּרָה",       en:"Zebra",      wiki:"Zebra",                 f:"zebra.mp3",     t:"#e8e8e8" },
+  { e:"🐒", he:"קוֹף",          en:"Monkey",     wiki:"Macaque",               f:"monkey.mp3",    t:"#ffe0b8" },
+  { e:"🦍", he:"גּוֹרִילָה",     en:"Gorilla",    wiki:"Gorilla",               s:"roar",  p:{low:80,dur:0.9},  t:"#d7d7df" },
+  { e:"🐻", he:"דֹּב",          en:"Bear",       wiki:"Brown bear",            f:"bear.mp3",      t:"#e6cfb0" },
+  { e:"🐼", he:"פַּנְדָּה",       en:"Panda",      wiki:"Giant panda",           s:"squeak",p:{soft:1},           t:"#eeeeee" },
+  { e:"🐨", he:"קוֹאָלָה",       en:"Koala",      wiki:"Koala",                 s:"grunt", p:{low:120},          t:"#dcdce4" },
+  { e:"🦘", he:"קֶנְגּוּרוּ",     en:"Kangaroo",   wiki:"Kangaroo",              s:"grunt", p:{low:150},          t:"#ffdcc0" },
+  { e:"🐊", he:"תַּנִּין",        en:"Crocodile",  wiki:"Crocodile",             f:"crocodile.mp3", t:"#cfe8c0" },
+  { e:"🦛", he:"הִיפּוֹפּוֹטָם",   en:"Hippo",      wiki:"Hippopotamus",          s:"grunt", p:{low:75,dur:0.5},  t:"#d8d2e2" },
+  { e:"🦏", he:"קַרְנַף",        en:"Rhino",      wiki:"Rhinoceros",            s:"grunt", p:{low:90,dur:0.45}, t:"#dadada" },
+  { e:"🐍", he:"נָחָשׁ",         en:"Snake",      wiki:"Snake",                 f:"snake.mp3",     t:"#d6ecc0" },
+  { e:"🦎", he:"לְטָאָה",        en:"Lizard",     wiki:"Tokay gecko",           f:"lizard.wav",    t:"#d2ecd0" },
+  { e:"🐢", he:"צָב",           en:"Turtle",     wiki:"Turtle",                s:"squeak",p:{soft:1,low:1},      t:"#cfe9d2" },
+  { e:"🦩", he:"פְלָמִינְגּוֹ",    en:"Flamingo",   wiki:"Flamingo",              f:"flamingo.wav",  t:"#ffd6e6" },
+  { e:"🦜", he:"תֻּכִּי",         en:"Parrot",     wiki:"Parrot",                s:"tweet", p:{},                 t:"#cfeede" },
+  { e:"🦚", he:"טַוָּס",         en:"Peacock",    wiki:"Peafowl",               f:"peacock.mp3",   t:"#cfe6ee" },
+  { e:"🦉", he:"יַנְשׁוּף",       en:"Owl",        wiki:"Owl",                   f:"owl.mp3",       t:"#e0d6c4" },
+  { e:"🦅", he:"נֶשֶׁר",         en:"Eagle",      wiki:"Eagle",                 f:"eagle.mp3",     t:"#e2d6c8" },
+  { e:"🐧", he:"פִּינְגְּוִין",     en:"Penguin",    wiki:"Penguin",               s:"squawk",p:{hi:1},             t:"#d4e6f0" },
+  { e:"🦦", he:"לוּטְרָה",        en:"Otter",      wiki:"Otter",                 s:"squeak",p:{},                 t:"#dfe0d2" },
+  { e:"🦫", he:"בּוֹנֶה",         en:"Beaver",     wiki:"Beaver",                s:"squeak",p:{low:1},            t:"#e6d6c2" },
+  { e:"🦊", he:"שׁוּעָל",        en:"Fox",        wiki:"Red fox",               f:"fox.mp3",       t:"#ffdcc0" },
+  { e:"🐺", he:"זְאֵב",          en:"Wolf",       wiki:"Wolf",                  f:"wolf.mp3",      t:"#d6dae4" },
+  { e:"🦌", he:"אַיָּל",         en:"Deer",       wiki:"Deer",                  f:"deer.mp3",      t:"#e8d8c4" },
+  { e:"🐪", he:"גָּמָל",         en:"Camel",      wiki:"Camel",                 s:"grunt", p:{low:85,dur:0.7},  t:"#f0e2c2" },
+  { e:"🦔", he:"קִיפּוֹד",        en:"Hedgehog",   wiki:"Hedgehog",              s:"squeak",p:{},                 t:"#e6dcc8" },
 ];
 
 let idx = 0;
 
-const emojiEl=document.getElementById("emoji"), nameHeEl=document.getElementById("nameHe"),
-      nameEnEl=document.getElementById("nameEn"), counterEl=document.getElementById("counter"),
-      cardEl=document.getElementById("card"), soundBtn=document.getElementById("sound"),
-      sayBtn=document.getElementById("say");
+const nameHeEl  = document.getElementById("nameHe");
+const nameEnEl  = document.getElementById("nameEn");
+const counterEl = document.getElementById("counter");
+const cardEl    = document.getElementById("card");
+const soundBtn  = document.getElementById("sound");
+const sayBtn    = document.getElementById("say");
+const animalView= document.getElementById("animalView");
+const animalPhoto=document.getElementById("animalPhoto");
+const emojiEl   = document.getElementById("emoji");
+const loadingDot= document.getElementById("loadingDot");
 
-/* ===================== מנוע קולות חיות (Web Audio) ===================== */
+/* ============================================================
+   Web Audio — שניהם: סינתטי + קבצים אמיתיים
+============================================================ */
 let AC;
-function ctx(){
-  AC = AC || new (window.AudioContext||window.webkitAudioContext)();
-  if (AC.state==="suspended") AC.resume();
+function ctx() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === "suspended") AC.resume();
   return AC;
 }
-function master(c){
-  const comp=c.createDynamicsCompressor(); comp.threshold.value=-12; comp.ratio.value=8;
-  const g=c.createGain(); g.gain.value=0.9;
+
+/* -- קולות אמיתיים: fetch → decodeAudioData → BufferSource -- */
+const soundBufs  = {};   // filename → decoded AudioBuffer
+const soundFetch = {};   // filename → Promise (in-flight)
+let   curSrc = null, capTimer = null;
+
+function stopSound() {
+  clearTimeout(capTimer);
+  if (curSrc) { try { curSrc.stop(); } catch(e) {} curSrc = null; }
+  loadingDot.style.display = "none";
+}
+
+async function playFile(filename) {
+  const c = ctx();           // ← unlock AudioContext עכשיו, סינכרוני בתוך הלחיצה
+  stopSound();
+
+  // אם הבאפר כבר בזיכרון — נגן מיד
+  if (soundBufs[filename]) {
+    _startBuffer(c, soundBufs[filename]);
+    return;
+  }
+
+  // טעינה (עם אינדיקטור)
+  loadingDot.style.display = "block";
+
+  if (!soundFetch[filename]) {
+    soundFetch[filename] = fetch("sounds/" + filename)
+      .then(r => r.arrayBuffer())
+      .then(arr => c.decodeAudioData(arr))
+      .then(buf => { soundBufs[filename] = buf; return buf; })
+      .catch(err => { console.warn("sound load failed:", filename, err); return null; });
+  }
+
+  const buf = await soundFetch[filename];
+  loadingDot.style.display = "none";
+  if (buf) _startBuffer(c, buf);
+}
+
+function _startBuffer(c, buf) {
+  stopSound();
+  const src = c.createBufferSource();
+  src.buffer = buf;
+  const gain = c.createGain();
+  gain.gain.value = 0.85;
+  src.connect(gain).connect(c.destination);
+  src.start(0);
+  curSrc = src;
+  capTimer = setTimeout(() => {
+    try { src.stop(); } catch(e) {}
+    curSrc = null;
+  }, 5000);
+}
+
+/* -- קולות סינתטיים (פולבק לחיות ללא קובץ) -- */
+function master(c) {
+  const comp = c.createDynamicsCompressor();
+  comp.threshold.value = -12; comp.ratio.value = 8;
+  const g = c.createGain(); g.gain.value = 0.9;
   g.connect(comp).connect(c.destination); return g;
 }
 function tone(c,out,o){
-  const {wave="sine",f0,f1=f0,t,dur,peak=0.3,atk=0.012,vibHz=0,vibDepth=0}=o;
+  const{wave="sine",f0,f1=f0,t,dur,peak=0.3,atk=0.012,vibHz=0,vibDepth=0}=o;
   const osc=c.createOscillator(); osc.type=wave;
   osc.frequency.setValueAtTime(f0,t);
   osc.frequency.exponentialRampToValueAtTime(Math.max(1,f1),t+dur);
   const g=c.createGain();
-  g.gain.setValueAtTime(0.0001,t);
-  g.gain.exponentialRampToValueAtTime(peak,t+atk);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+atk);
   g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
   osc.connect(g).connect(out);
-  if(vibHz){ const l=c.createOscillator(); l.frequency.value=vibHz;
-    const lg=c.createGain(); lg.gain.value=vibDepth; l.connect(lg).connect(osc.frequency);
-    l.start(t); l.stop(t+dur); }
-  osc.start(t); osc.stop(t+dur+0.05);
+  if(vibHz){const l=c.createOscillator();l.frequency.value=vibHz;
+    const lg=c.createGain();lg.gain.value=vibDepth;l.connect(lg).connect(osc.frequency);
+    l.start(t);l.stop(t+dur);}
+  osc.start(t);osc.stop(t+dur+0.05);
 }
 function noise(c,out,o){
-  const {t,dur,peak=0.3,type="highpass",freq=1000,f1,q=1}=o;
+  const{t,dur,peak=0.3,type="highpass",freq=1000,f1,q=1}=o;
   const src=c.createBufferSource();
   const buf=c.createBuffer(1,Math.max(1,c.sampleRate*dur),c.sampleRate);
-  const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   src.buffer=buf;
-  const f=c.createBiquadFilter(); f.type=type; f.frequency.setValueAtTime(freq,t);
-  if(f1) f.frequency.exponentialRampToValueAtTime(f1,t+dur); f.Q.value=q;
+  const f=c.createBiquadFilter();f.type=type;f.frequency.setValueAtTime(freq,t);
+  if(f1)f.frequency.exponentialRampToValueAtTime(f1,t+dur);f.Q.value=q;
   const g=c.createGain();
-  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+0.01);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+0.01);
   g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-  src.connect(f).connect(g).connect(out);
-  src.start(t); src.stop(t+dur);
+  src.connect(f).connect(g).connect(out);src.start(t);src.stop(t+dur);
 }
-
-const RECIPES = {
-  roar(c,out,t,p){ const low=p.low||110, dur=p.dur||0.8;
-    tone(c,out,{wave:"sawtooth",f0:low*1.5,f1:low,t,dur,peak:0.34,vibHz:24,vibDepth:16});
-    noise(c,out,{t,dur,peak:0.12,type:"lowpass",freq:800}); },
-  trumpet(c,out,t){
-    tone(c,out,{wave:"sawtooth",f0:170,f1:520,t,dur:0.18,peak:0.32});
-    tone(c,out,{wave:"sawtooth",f0:520,f1:360,t:t+0.18,dur:0.5,peak:0.3,vibHz:14,vibDepth:50}); },
-  hum(c,out,t){ tone(c,out,{wave:"sine",f0:150,f1:135,t,dur:0.7,peak:0.28,vibHz:6,vibDepth:8}); },
-  neigh(c,out,t){
-    tone(c,out,{wave:"sawtooth",f0:720,f1:340,t,dur:0.55,peak:0.26,vibHz:32,vibDepth:60});
-    noise(c,out,{t,dur:0.55,peak:0.06,type:"bandpass",freq:1200,q:2}); },
-  monkey(c,out,t){ const ps=[700,780,940,860]; ps.forEach((f,i)=>
-    tone(c,out,{wave:"triangle",f0:f,f1:f*1.1,t:t+i*0.12,dur:0.1,peak:0.3})); },
-  grunt(c,out,t,p){ const low=p.low||130, dur=p.dur||0.22;
-    tone(c,out,{wave:"square",f0:low,f1:low*0.8,t,dur,peak:0.3});
-    tone(c,out,{wave:"square",f0:low,f1:low*0.8,t:t+dur+0.08,dur,peak:0.26}); },
-  squeak(c,out,t,p){ const b=p.low?1100:1500, pk=p.soft?0.2:0.3;
-    tone(c,out,{wave:"sine",f0:b,f1:b*1.5,t,dur:0.1,peak:pk});
-    tone(c,out,{wave:"sine",f0:b*1.1,f1:b*1.6,t:t+0.16,dur:0.1,peak:pk}); },
-  hiss(c,out,t,p){ noise(c,out,{t,dur:0.8,peak:p.soft?0.1:0.18,type:"highpass",freq:3000,f1:6500,q:0.7}); },
-  honk(c,out,t){
-    tone(c,out,{wave:"sawtooth",f0:300,f1:240,t,dur:0.16,peak:0.28,vibHz:0});
-    tone(c,out,{wave:"sawtooth",f0:300,f1:240,t:t+0.24,dur:0.18,peak:0.26}); },
-  tweet(c,out,t){ [1900,2500,2100].forEach((f,i)=>
-    tone(c,out,{wave:"sine",f0:f,f1:f*1.3,t:t+i*0.13,dur:0.1,peak:0.26})); },
-  squawk(c,out,t,p){ const b=p.hi?1100:800;
-    tone(c,out,{wave:"sawtooth",f0:b,f1:b*0.7,t,dur:0.18,peak:0.28});
-    noise(c,out,{t,dur:0.18,peak:0.1,type:"bandpass",freq:b*1.5,q:1.5});
-    tone(c,out,{wave:"sawtooth",f0:b,f1:b*0.7,t:t+0.26,dur:0.18,peak:0.25}); },
-  hoot(c,out,t){
-    tone(c,out,{wave:"sine",f0:430,f1:370,t,dur:0.26,peak:0.26,atk:0.05});
-    tone(c,out,{wave:"sine",f0:420,f1:360,t:t+0.4,dur:0.3,peak:0.26,atk:0.05}); },
-  screech(c,out,t,p){ const b=p.yip?1600:2200;
-    tone(c,out,{wave:"sawtooth",f0:b,f1:b*0.6,t,dur:p.yip?0.18:0.4,peak:0.26,vibHz:18,vibDepth:40});
-    noise(c,out,{t,dur:0.3,peak:0.08,type:"highpass",freq:2500}); },
-  howl(c,out,t){
-    tone(c,out,{wave:"sine",f0:300,f1:540,t,dur:0.4,peak:0.3});
-    tone(c,out,{wave:"sine",f0:540,f1:500,t:t+0.4,dur:0.5,peak:0.3,vibHz:7,vibDepth:14});
-    tone(c,out,{wave:"sine",f0:500,f1:320,t:t+0.9,dur:0.4,peak:0.28}); },
+const RECIPES={
+  roar(c,o,t,p){const low=p.low||110,dur=p.dur||0.8;
+    tone(c,o,{wave:"sawtooth",f0:low*1.5,f1:low,t,dur,peak:0.34,vibHz:24,vibDepth:16});
+    noise(c,o,{t,dur,peak:0.12,type:"lowpass",freq:800});},
+  grunt(c,o,t,p){const low=p.low||130,dur=p.dur||0.22;
+    tone(c,o,{wave:"square",f0:low,f1:low*.8,t,dur,peak:0.3});
+    tone(c,o,{wave:"square",f0:low,f1:low*.8,t:t+dur+0.08,dur,peak:0.26});},
+  squeak(c,o,t,p){const b=p.low?1100:1500,pk=p.soft?.2:.3;
+    tone(c,o,{wave:"sine",f0:b,f1:b*1.5,t,dur:.1,peak:pk});
+    tone(c,o,{wave:"sine",f0:b*1.1,f1:b*1.6,t:t+.16,dur:.1,peak:pk});},
+  tweet(c,o,t){[1900,2500,2100].forEach((f,i)=>
+    tone(c,o,{wave:"sine",f0:f,f1:f*1.3,t:t+i*.13,dur:.1,peak:.26}));},
+  squawk(c,o,t,p){const b=p.hi?1100:800;
+    tone(c,o,{wave:"sawtooth",f0:b,f1:b*.7,t,dur:.18,peak:.28});
+    noise(c,o,{t,dur:.18,peak:.1,type:"bandpass",freq:b*1.5,q:1.5});
+    tone(c,o,{wave:"sawtooth",f0:b,f1:b*.7,t:t+.26,dur:.18,peak:.25});},
 };
 
-/* נגן קובץ קול אמיתי, מוגבל ל-5 שניות, ללא חפיפה בין צלילים */
-let curAudio=null, capTimer=null;
-const audioCache={};
-function stopAudio(){
-  clearTimeout(capTimer);
-  if(curAudio){ try{ curAudio.pause(); curAudio.currentTime=0; }catch(e){} curAudio=null; }
-}
-function playFile(f){
-  stopAudio();
-  let a=audioCache[f];
-  if(!a){ a=new Audio("sounds/"+f); a.preload="auto"; audioCache[f]=a; }
-  try{ a.currentTime=0; }catch(e){}
-  a.play().catch(()=>{});
-  curAudio=a;
-  capTimer=setTimeout(()=>{ try{ a.pause(); a.currentTime=0; }catch(e){} }, 5000);
-}
-function playAnimal(a){
-  flashBtn(soundBtn, 900);
-  if("speechSynthesis" in window) speechSynthesis.cancel();  // לעצור דיבור אנגלית
-  if(a.f){ playFile(a.f); return; }                 // קול אמיתי
-  const c=ctx(); const out=master(c);               // פולבק מסונתז
-  (RECIPES[a.s]||RECIPES.grunt)(c,out,c.currentTime+0.03,a.p||{});
+function playAnimal(a) {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  if (a.f) {
+    playFile(a.f);  // Web Audio async — AudioContext נפתח למעלה סינכרונית
+  } else {
+    const c = ctx(), out = master(c), t = c.currentTime + 0.03;
+    (RECIPES[a.s] || RECIPES.grunt)(c, out, t, a.p || {});
+  }
+  flashBtn(soundBtn, 1200);
 }
 
-/* ===================== דיבור באנגלית ===================== */
-let enVoice=null;
-function pickVoice(){
-  const v=speechSynthesis.getVoices();
-  enVoice = v.find(x=>/en[-_]US/i.test(x.lang) && /samantha|female|zira|google/i.test(x.name))
-         || v.find(x=>/^en/i.test(x.lang)) || null;
-}
-if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
-function say(text){
-  if(!("speechSynthesis" in window)) return;
-  stopAudio();                       // לעצור קול חיה אם מתנגן
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang="en-US"; u.rate=0.78; u.pitch=1.15;
-  if(enVoice) u.voice=enVoice;
-  u.onstart=()=>sayBtn.classList.add("playing");
-  u.onend=()=>sayBtn.classList.remove("playing");
-  speechSynthesis.speak(u);
-  flashBtn(sayBtn,1200);
-}
-function flashBtn(btn,ms){ btn.classList.add("playing"); setTimeout(()=>btn.classList.remove("playing"),ms); }
+/* ============================================================
+   תמונות אמיתיות — Wikipedia REST API + localStorage cache
+============================================================ */
+const IMG_V   = "nelly3_";
+const imgMem  = {};   // en → url (in-memory)
 
-/* ===================== ניצוצות ===================== */
-function sparkle(x,y){
-  const chars=["✨","⭐","💫","🌟"];
-  for(let i=0;i<6;i++){
-    const s=document.createElement("div");
-    s.className="spark"; s.textContent=chars[i%chars.length];
-    const ang=(Math.PI*2*i)/6, dist=50+Math.random()*40;
-    s.style.left=x+"px"; s.style.top=y+"px";
-    s.style.setProperty("--dx",Math.cos(ang)*dist+"px");
-    s.style.setProperty("--dy",Math.sin(ang)*dist+"px");
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),700);
+async function getPhoto(a) {
+  if (imgMem[a.en]) return imgMem[a.en];
+  const lsKey = IMG_V + a.en;
+  const hit   = localStorage.getItem(lsKey);
+  if (hit) { imgMem[a.en] = hit; return hit; }
+
+  try {
+    const wikiTitle = encodeURIComponent(a.wiki || a.en);
+    const r = await fetch(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`,
+      { headers: { "Api-User-Agent": "NellyZoo/1.0 (kids-edu; itaycode@gmail.com)" } }
+    );
+    if (!r.ok) return null;
+    const d = await r.json();
+    let url = d.thumbnail?.source || null;
+    if (url) {
+      // הגדל לרזולוציה טובה יותר
+      url = url.replace(/\/\d+px-/, "/500px-");
+      localStorage.setItem(lsKey, url);
+      imgMem[a.en] = url;
+    }
+    return url;
+  } catch(e) {
+    return null;
   }
 }
 
-/* ===================== הצגה וניווט ===================== */
-function render(anim="pop"){
-  const a=ANIMALS[idx];
-  emojiEl.textContent=a.e; nameHeEl.textContent=a.he; nameEnEl.textContent=a.en;
-  cardEl.style.setProperty("--tint",a.t);
-  counterEl.textContent=`${idx+1} / ${ANIMALS.length}`;
-  emojiEl.classList.remove("pop","wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add(anim);
-  document.querySelectorAll(".tile").forEach((tl,i)=>tl.classList.toggle("active",i===idx));
+function loadPhoto(a) {
+  animalPhoto.classList.remove("show");
+  animalPhoto.src = "";
+
+  getPhoto(a).then(url => {
+    if (!url || ANIMALS[idx].en !== a.en) return;  // דף השתנה
+    const img = new Image();
+    img.onload = () => {
+      if (ANIMALS[idx].en !== a.en) return;
+      animalPhoto.src = url;
+      animalPhoto.classList.add("show");
+    };
+    img.src = url;
+  });
 }
-function go(step){ idx=(idx+step+ANIMALS.length)%ANIMALS.length; render("pop"); playAnimal(ANIMALS[idx]); }
 
-document.getElementById("next").onclick=()=>go(1);
-document.getElementById("prev").onclick=()=>go(-1);
+/* ============================================================
+   ניצוצות
+============================================================ */
+function sparkle(x, y) {
+  ["✨","⭐","💫","🌟"].forEach((ch, i) => {
+    const s = document.createElement("div");
+    s.className = "spark"; s.textContent = ch;
+    const ang = (Math.PI * 2 * i) / 4, dist = 55 + Math.random() * 40;
+    s.style.left = x + "px"; s.style.top = y + "px";
+    s.style.setProperty("--dx", Math.cos(ang) * dist + "px");
+    s.style.setProperty("--dy", Math.sin(ang) * dist + "px");
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 700);
+  });
+}
 
-soundBtn.onclick=()=>{ playAnimal(ANIMALS[idx]);
-  emojiEl.classList.remove("wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add("wiggle"); };
-sayBtn.onclick=()=>say(ANIMALS[idx].en);
+/* ============================================================
+   הצגה וניווט
+============================================================ */
+function render(anim = "pop") {
+  const a = ANIMALS[idx];
+  emojiEl.textContent  = a.e;
+  nameHeEl.textContent = a.he;
+  nameEnEl.textContent = a.en;
+  cardEl.style.setProperty("--tint", a.t);
+  counterEl.textContent = `${idx + 1} / ${ANIMALS.length}`;
 
-emojiEl.addEventListener("click",e=>{
+  animalView.classList.remove("pop", "wiggle");
+  void animalView.offsetWidth;
+  animalView.classList.add(anim);
+
+  loadPhoto(a);
+
+  document.querySelectorAll(".tile").forEach((tl, i) =>
+    tl.classList.toggle("active", i === idx));
+}
+
+function go(step) {
+  idx = (idx + step + ANIMALS.length) % ANIMALS.length;
+  render("pop");
   playAnimal(ANIMALS[idx]);
-  emojiEl.classList.remove("wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add("wiggle");
-  const r=emojiEl.getBoundingClientRect(); sparkle(r.left+r.width/2, r.top+r.height/2);
+}
+
+/* ============================================================
+   דיבור באנגלית
+============================================================ */
+let enVoice = null;
+function pickVoice() {
+  const v = speechSynthesis.getVoices();
+  enVoice = v.find(x => /en[-_]US/i.test(x.lang) && /samantha|female|zira|google/i.test(x.name))
+         || v.find(x => /^en/i.test(x.lang)) || null;
+}
+if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+
+function say(text) {
+  if (!("speechSynthesis" in window)) return;
+  stopSound();
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US"; u.rate = 0.78; u.pitch = 1.15;
+  if (enVoice) u.voice = enVoice;
+  u.onstart = () => sayBtn.classList.add("playing");
+  u.onend   = () => sayBtn.classList.remove("playing");
+  speechSynthesis.speak(u);
+  flashBtn(sayBtn, 1200);
+}
+
+function flashBtn(btn, ms) {
+  btn.classList.add("playing");
+  setTimeout(() => btn.classList.remove("playing"), ms);
+}
+
+/* ============================================================
+   אירועים
+============================================================ */
+document.getElementById("next").onclick = () => go(1);
+document.getElementById("prev").onclick = () => go(-1);
+
+soundBtn.onclick = () => {
+  playAnimal(ANIMALS[idx]);
+  animalView.classList.remove("wiggle"); void animalView.offsetWidth; animalView.classList.add("wiggle");
+};
+sayBtn.onclick = () => say(ANIMALS[idx].en);
+
+animalView.addEventListener("click", e => {
+  playAnimal(ANIMALS[idx]);
+  animalView.classList.remove("wiggle"); void animalView.offsetWidth; animalView.classList.add("wiggle");
+  const r = animalView.getBoundingClientRect();
+  sparkle(r.left + r.width / 2, r.top + r.height / 2);
 });
 
-/* החלקה באצבע (RTL: ימינה=הבא) */
-let tx=null;
-const stage=document.querySelector(".stage");
-stage.addEventListener("touchstart",e=>tx=e.touches[0].clientX,{passive:true});
-stage.addEventListener("touchend",e=>{
-  if(tx===null) return;
-  const dx=e.changedTouches[0].clientX-tx;
-  if(Math.abs(dx)>50) go(dx>0?-1:1); // RTL: החלקה שמאלה=הבא, ימינה=הקודם
-  tx=null;
-},{passive:true});
+// החלקה (RTL: שמאלה = הבא)
+let tx = null;
+document.querySelector(".stage").addEventListener("touchstart", e => tx = e.touches[0].clientX, { passive: true });
+document.querySelector(".stage").addEventListener("touchend", e => {
+  if (tx === null) return;
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 50) go(dx > 0 ? -1 : 1);
+  tx = null;
+}, { passive: true });
 
-/* ===================== רשת כל החיות ===================== */
-const grid=document.getElementById("grid");
-ANIMALS.forEach((a,i)=>{
-  const tl=document.createElement("button");
-  tl.className="tile";
-  tl.innerHTML=`<div class="te">${a.e}</div><div class="tn">${a.he}</div>`;
-  tl.onclick=()=>{ idx=i; render("pop"); playAnimal(a); closeSheet(); };
+/* ============================================================
+   רשת כל החיות
+============================================================ */
+const grid = document.getElementById("grid");
+ANIMALS.forEach((a, i) => {
+  const tl = document.createElement("button");
+  tl.className = "tile";
+  tl.innerHTML = `<div class="te">${a.e}</div><div class="tn">${a.he}</div>`;
+  tl.onclick = () => { idx = i; render("pop"); playAnimal(a); closeSheet(); };
   grid.appendChild(tl);
 });
-const sheet=document.getElementById("sheet");
-function openSheet(){ sheet.classList.add("open"); }
-function closeSheet(){ sheet.classList.remove("open"); }
-document.getElementById("openAll").onclick=openSheet;
-document.getElementById("closeSheet").onclick=closeSheet;
-sheet.addEventListener("click",e=>{ if(e.target===sheet) closeSheet(); });
+
+const sheet = document.getElementById("sheet");
+function openSheet()  { sheet.classList.add("open"); }
+function closeSheet() { sheet.classList.remove("open"); }
+document.getElementById("openAll").onclick    = openSheet;
+document.getElementById("closeSheet").onclick = closeSheet;
+sheet.addEventListener("click", e => { if (e.target === sheet) closeSheet(); });
+
+// טען תמונות של החיות הסמוכות ברקע
+function preloadAdjacent() {
+  [1, -1, 2, -2].forEach(d => {
+    const i = (idx + d + ANIMALS.length) % ANIMALS.length;
+    getPhoto(ANIMALS[i]); // cache only, no display
+  });
+}
 
 render("pop");
+setTimeout(preloadAdjacent, 1000);
 </script>
 </body>
 </html>
