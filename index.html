@@ -4,248 +4,176 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#5bc0de">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#8ed6ff">
 <title>גן החיות של נלי</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
 
-  :root {
-    --sky: #8ed6ff;
-    --grass: #7bd66a;
-    --sun: #ffd93d;
-    --card: #ffffff;
-    --ink: #3a3a5a;
-  }
-
-  html, body {
-    height: 100%;
-    font-family: -apple-system, "Varela Round", "Segoe UI", system-ui, sans-serif;
-    overflow: hidden;
-  }
+  html, body { height:100%; font-family:"Varela Round",-apple-system,"Segoe UI",system-ui,sans-serif; overflow:hidden; }
 
   body {
-    background: linear-gradient(180deg, #8ed6ff 0%, #c9f0a8 55%, #9be86a 100%);
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
-    touch-action: manipulation;
+    height:100dvh;
+    display:flex; flex-direction:column;
+    background:linear-gradient(180deg, #7ec8ff 0%, #aee3ff 45%, #d8f5b0 72%, #9be86a 100%);
+    touch-action:manipulation;
+    position:relative;
   }
 
-  /* ---------- כותרת ---------- */
-  header {
-    flex: 0 0 auto;
-    text-align: center;
-    padding: 14px 10px 6px;
+  /* ---------- רקע מונפש: שמש, עננים, דשא ---------- */
+  .bg { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .sun {
+    position:absolute; top:8px; left:14px;
+    width:64px; height:64px; border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, #fff3a8, #ffd93d);
+    box-shadow:0 0 26px 10px rgba(255,217,61,.6);
+    animation:spin 30s linear infinite;
   }
+  .sun::before { content:""; position:absolute; inset:-12px; border-radius:50%;
+    background:repeating-conic-gradient(rgba(255,217,61,.5) 0 8deg, transparent 8deg 22deg); z-index:-1; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  .cloud { position:absolute; background:#fff; border-radius:50px; opacity:.92;
+    filter:drop-shadow(0 6px 8px rgba(0,0,0,.06)); }
+  .cloud::before, .cloud::after { content:""; position:absolute; background:#fff; border-radius:50%; }
+  .c1 { width:90px; height:30px; top:60px; animation:drift1 26s linear infinite; }
+  .c1::before { width:42px; height:42px; top:-18px; left:14px; }
+  .c1::after  { width:30px; height:30px; top:-12px; left:48px; }
+  .c2 { width:70px; height:24px; top:130px; opacity:.8; animation:drift2 34s linear infinite; }
+  .c2::before { width:34px; height:34px; top:-14px; left:10px; }
+  .c2::after  { width:26px; height:26px; top:-9px; left:40px; }
+  @keyframes drift1 { from{ right:-120px; } to{ right:110%; } }
+  @keyframes drift2 { from{ right:-100px; } to{ right:110%; } }
+
+  .hills { position:absolute; bottom:0; left:0; width:100%; height:120px;
+    background:radial-gradient(120% 80px at 25% 100%, #7bd35a 60%, transparent 61%),
+               radial-gradient(120% 90px at 80% 100%, #6cc94d 60%, transparent 61%); }
+
+  /* ---------- שכבת תוכן ---------- */
+  header, .stage, .counter, .all-btn { position:relative; z-index:1; }
+
+  header { flex:0 0 auto; text-align:center; padding:12px 10px 4px; }
   header h1 {
-    font-size: clamp(26px, 7vw, 40px);
-    color: #fff;
-    text-shadow: 0 3px 0 rgba(0,0,0,.12), 0 0 14px rgba(255,255,255,.4);
-    letter-spacing: 1px;
+    font-size:clamp(26px,7.5vw,42px); color:#fff; font-weight:800; letter-spacing:1px;
+    text-shadow:0 3px 0 #ff9ec4, 0 4px 0 #f17fad, 0 0 16px rgba(255,255,255,.5);
   }
-  header h1 .paw { font-size: .9em; }
+  header h1 .paw { font-size:.85em; }
 
-  /* ---------- כרטיס חיה ראשי ---------- */
-  .stage {
-    flex: 1 1 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 14px;
-    min-height: 0;
-  }
+  .stage { flex:1 1 auto; display:flex; align-items:center; justify-content:center; padding:6px 12px; min-height:0; }
 
   .card {
-    background: var(--card);
-    border-radius: 34px;
-    box-shadow: 0 14px 30px rgba(60,60,120,.22), inset 0 -6px 0 rgba(0,0,0,.04);
-    width: 100%;
-    max-width: 440px;
-    padding: 18px 16px 22px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
+    --tint:#fff3c4;
+    background:linear-gradient(180deg, #ffffff 0%, var(--tint) 100%);
+    border:5px solid #fff;
+    border-radius:38px;
+    box-shadow:0 16px 0 rgba(0,0,0,.07), 0 18px 36px rgba(60,60,120,.25);
+    width:100%; max-width:440px; padding:14px 16px 20px;
+    text-align:center; position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    transition:background .35s;
   }
 
   .emoji {
-    font-size: clamp(90px, 30vw, 170px);
-    line-height: 1.05;
-    filter: drop-shadow(0 10px 10px rgba(0,0,0,.15));
-    cursor: pointer;
+    font-size:clamp(96px,30vw,168px); line-height:1.02;
+    filter:drop-shadow(0 12px 10px rgba(0,0,0,.18));
+    cursor:pointer; position:relative;
   }
-  .emoji.pop { animation: pop .5s ease; }
+  .emoji.pop    { animation:pop .55s cubic-bezier(.2,.9,.3,1.4); }
+  .emoji.wiggle { animation:wiggle .5s ease; }
   @keyframes pop {
-    0% { transform: scale(.4) rotate(-12deg); opacity: 0; }
-    60% { transform: scale(1.15) rotate(6deg); }
-    100% { transform: scale(1) rotate(0); opacity: 1; }
+    0%{ transform:scale(.3) rotate(-14deg); opacity:0; }
+    60%{ transform:scale(1.18) rotate(7deg); }
+    100%{ transform:scale(1) rotate(0); opacity:1; }
   }
-  .emoji.wiggle { animation: wiggle .5s ease; }
-  @keyframes wiggle {
-    0%,100% { transform: rotate(0); }
-    25% { transform: rotate(-9deg) scale(1.06); }
-    75% { transform: rotate(9deg) scale(1.06); }
-  }
+  @keyframes wiggle { 0%,100%{ transform:rotate(0);} 25%{ transform:rotate(-10deg) scale(1.08);} 75%{ transform:rotate(10deg) scale(1.08);} }
 
-  .name-he {
-    font-size: clamp(30px, 9vw, 46px);
-    font-weight: 800;
-    color: var(--ink);
-  }
-  .name-en {
-    font-size: clamp(20px, 6vw, 30px);
-    font-weight: 700;
-    color: #ff7eb3;
-    direction: ltr;
-    letter-spacing: .5px;
-  }
+  .name-he { font-size:clamp(32px,9vw,48px); font-weight:800; color:#3a3a5a; }
+  .name-en { font-size:clamp(20px,6vw,30px); font-weight:700; color:#ff5d9e; direction:ltr; letter-spacing:.5px; }
 
-  /* ---------- כפתור הקול ---------- */
-  .speak-btn {
-    margin-top: 8px;
-    border: none;
-    background: linear-gradient(180deg, #ffd93d, #ffb43d);
-    color: #6b4500;
-    font-size: clamp(20px, 6vw, 26px);
-    font-weight: 800;
-    font-family: inherit;
-    padding: 14px 26px;
-    border-radius: 999px;
-    box-shadow: 0 7px 0 #e09a1f, 0 10px 18px rgba(0,0,0,.18);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: transform .08s, box-shadow .08s;
+  /* ---------- כפתורי פעולה ---------- */
+  .actions { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; justify-content:center; }
+  .btn {
+    border:none; font-family:inherit; font-weight:800; cursor:pointer;
+    border-radius:999px; padding:14px 20px; font-size:clamp(17px,4.6vw,21px);
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .08s, box-shadow .08s;
   }
-  .speak-btn:active {
-    transform: translateY(5px);
-    box-shadow: 0 2px 0 #e09a1f, 0 4px 10px rgba(0,0,0,.18);
+  .btn:active { transform:translateY(5px); }
+  .btn-sound {
+    background:linear-gradient(180deg,#ffd93d,#ffae3b); color:#7a4d00;
+    box-shadow:0 7px 0 #e0921f, 0 10px 16px rgba(0,0,0,.18);
   }
-  .speak-btn.speaking { animation: glow .8s ease infinite; }
-  @keyframes glow {
-    0%,100% { box-shadow: 0 7px 0 #e09a1f, 0 0 0 0 rgba(255,217,61,.6); }
-    50% { box-shadow: 0 7px 0 #e09a1f, 0 0 0 14px rgba(255,217,61,0); }
+  .btn-sound:active { box-shadow:0 2px 0 #e0921f; }
+  .btn-say {
+    background:linear-gradient(180deg,#6fe3ff,#3bb6ff); color:#054a73;
+    box-shadow:0 7px 0 #1f8fd0, 0 10px 16px rgba(0,0,0,.18);
   }
+  .btn-say:active { box-shadow:0 2px 0 #1f8fd0; }
+  .btn.playing { animation:pulse .7s ease infinite; }
+  @keyframes pulse { 0%,100%{ filter:brightness(1);} 50%{ filter:brightness(1.18);} }
 
   /* ---------- חצים ---------- */
-  .nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    left: 0;
-    display: flex;
-    justify-content: space-between;
-    pointer-events: none;
-    padding: 0 4px;
-  }
+  .nav { position:absolute; top:46%; left:0; width:100%; display:flex; justify-content:space-between;
+    transform:translateY(-50%); pointer-events:none; padding:0 2px; }
   .arrow {
-    pointer-events: auto;
-    width: 58px; height: 58px;
-    border: none;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 5px 0 rgba(0,0,0,.12), 0 8px 16px rgba(0,0,0,.15);
-    font-size: 30px;
-    color: var(--ink);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
+    pointer-events:auto; width:56px; height:56px; border:none; border-radius:50%;
+    background:#fff; box-shadow:0 5px 0 rgba(0,0,0,.12), 0 8px 16px rgba(0,0,0,.15);
+    font-size:30px; font-weight:800; color:#5b5b80; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding-bottom:4px;
   }
-  .arrow:active { transform: translateY(4px); box-shadow: 0 1px 0 rgba(0,0,0,.12); }
+  .arrow:active { transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.12); }
 
-  .counter {
-    flex: 0 0 auto;
-    text-align: center;
-    color: #fff;
-    font-weight: 700;
-    font-size: 16px;
-    padding: 2px 0 6px;
-    text-shadow: 0 1px 2px rgba(0,0,0,.2);
+  .counter { flex:0 0 auto; text-align:center; color:#fff; font-weight:800; font-size:15px;
+    padding:2px 0 4px; text-shadow:0 1px 2px rgba(0,0,0,.2); }
+
+  .all-btn {
+    flex:0 0 auto; margin:0 auto 12px; background:#fff; border:none; border-radius:999px;
+    padding:12px 26px; font-family:inherit; font-size:18px; font-weight:800; color:#3a3a5a;
+    box-shadow:0 6px 0 rgba(0,0,0,.12); cursor:pointer;
   }
+  .all-btn:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.12); }
+
+  /* ---------- ניצוצות ---------- */
+  .spark { position:fixed; font-size:26px; pointer-events:none; z-index:60;
+    animation:spark .7s ease-out forwards; }
+  @keyframes spark { 0%{ transform:translate(0,0) scale(.4); opacity:1; }
+    100%{ transform:translate(var(--dx),var(--dy)) scale(1.3) rotate(40deg); opacity:0; } }
 
   /* ---------- מגירת כל החיות ---------- */
-  .all-btn {
-    flex: 0 0 auto;
-    margin: 0 auto 10px;
-    background: rgba(255,255,255,.9);
-    border: none;
-    border-radius: 999px;
-    padding: 11px 22px;
-    font-family: inherit;
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--ink);
-    box-shadow: 0 5px 0 rgba(0,0,0,.1);
-    cursor: pointer;
-  }
-  .all-btn:active { transform: translateY(3px); }
-
-  .sheet {
-    position: fixed;
-    inset: 0;
-    background: rgba(40,40,80,.45);
-    backdrop-filter: blur(3px);
-    display: none;
-    align-items: flex-end;
-    z-index: 50;
-  }
-  .sheet.open { display: flex; animation: fade .2s ease; }
-  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-
-  .sheet-inner {
-    background: #fff;
-    width: 100%;
-    max-height: 80dvh;
-    border-radius: 30px 30px 0 0;
-    padding: 14px 14px 24px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    animation: slideup .28s cubic-bezier(.2,.9,.3,1.1);
-  }
-  @keyframes slideup { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-  .sheet-head {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 10px; padding: 0 6px;
-  }
-  .sheet-head h2 { font-size: 24px; color: var(--ink); }
-  .close-x {
-    border: none; background: #ffe1ec; color: #ff5d8f;
-    width: 40px; height: 40px; border-radius: 50%;
-    font-size: 22px; font-weight: 800; cursor: pointer;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
-    gap: 10px;
-  }
-  .tile {
-    background: #f4f8ff;
-    border: 3px solid transparent;
-    border-radius: 20px;
-    padding: 10px 4px 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform .1s;
-  }
-  .tile:active { transform: scale(.92); }
-  .tile.active { border-color: #ffb43d; background: #fff6e0; }
-  .tile .te { font-size: 40px; line-height: 1; }
-  .tile .tn { font-size: 13px; font-weight: 700; color: var(--ink); margin-top: 3px; }
+  .sheet { position:fixed; inset:0; background:rgba(40,40,80,.45); backdrop-filter:blur(3px);
+    display:none; align-items:flex-end; z-index:50; }
+  .sheet.open { display:flex; animation:fade .2s ease; }
+  @keyframes fade { from{ opacity:0; } to{ opacity:1; } }
+  .sheet-inner { background:#fff; width:100%; max-height:82dvh; border-radius:30px 30px 0 0;
+    padding:14px 14px 26px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    animation:slideup .3s cubic-bezier(.2,.9,.3,1.1); }
+  @keyframes slideup { from{ transform:translateY(100%);} to{ transform:translateY(0);} }
+  .sheet-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:0 6px; }
+  .sheet-head h2 { font-size:24px; color:#3a3a5a; }
+  .close-x { border:none; background:#ffe1ec; color:#ff5d8f; width:42px; height:42px;
+    border-radius:50%; font-size:22px; font-weight:800; cursor:pointer; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(84px,1fr)); gap:10px; }
+  .tile { background:#f4f8ff; border:3px solid transparent; border-radius:22px; padding:10px 4px 8px;
+    text-align:center; cursor:pointer; transition:transform .1s; }
+  .tile:active { transform:scale(.9); }
+  .tile.active { border-color:#ffae3b; background:#fff6e0; }
+  .tile .te { font-size:42px; line-height:1; }
+  .tile .tn { font-size:13px; font-weight:700; color:#3a3a5a; margin-top:3px; }
 </style>
 </head>
 <body>
 
-  <header>
-    <h1><span class="paw">🐾</span> גן החיות של נלי <span class="paw">🐾</span></h1>
-  </header>
+  <div class="bg">
+    <div class="sun"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="hills"></div>
+  </div>
+
+  <header><h1><span class="paw">🐾</span> גן החיות של נלי <span class="paw">🐾</span></h1></header>
 
   <div class="stage">
-    <div class="card">
+    <div class="card" id="card">
       <nav class="nav">
         <button class="arrow" id="prev" aria-label="הקודם">›</button>
         <button class="arrow" id="next" aria-label="הבא">‹</button>
@@ -253,12 +181,14 @@
       <div class="emoji" id="emoji">🦁</div>
       <div class="name-he" id="nameHe">אריה</div>
       <div class="name-en" id="nameEn">Lion</div>
-      <button class="speak-btn" id="speak">🔊 איך אומרים?</button>
+      <div class="actions">
+        <button class="btn btn-sound" id="sound">🐾 איזה קול?</button>
+        <button class="btn btn-say" id="say">🔊 איך אומרים?</button>
+      </div>
     </div>
   </div>
 
   <div class="counter" id="counter"></div>
-
   <button class="all-btn" id="openAll">🐘 כל החיות</button>
 
   <div class="sheet" id="sheet">
@@ -272,126 +202,225 @@
   </div>
 
 <script>
-  const ANIMALS = [
-    { e:"🦁", he:"אַרְיֵה",   en:"Lion" },
-    { e:"🐯", he:"נָמֵר",     en:"Tiger" },
-    { e:"🐘", he:"פִּיל",      en:"Elephant" },
-    { e:"🦒", he:"גִ'ירָפָה",  en:"Giraffe" },
-    { e:"🦓", he:"זֶבְּרָה",    en:"Zebra" },
-    { e:"🐒", he:"קוֹף",       en:"Monkey" },
-    { e:"🦍", he:"גּוֹרִילָה",  en:"Gorilla" },
-    { e:"🐻", he:"דֹּב",       en:"Bear" },
-    { e:"🐼", he:"פַּנְדָּה",    en:"Panda" },
-    { e:"🐨", he:"קוֹאָלָה",    en:"Koala" },
-    { e:"🦘", he:"קֶנְגּוּרוּ",  en:"Kangaroo" },
-    { e:"🐊", he:"תַּנִּין",     en:"Crocodile" },
-    { e:"🦛", he:"הִיפּוֹפּוֹטָם", en:"Hippo" },
-    { e:"🦏", he:"קַרְנַף",     en:"Rhino" },
-    { e:"🐍", he:"נָחָשׁ",      en:"Snake" },
-    { e:"🦎", he:"לְטָאָה",     en:"Lizard" },
-    { e:"🐢", he:"צָב",        en:"Turtle" },
-    { e:"🦩", he:"פְלָמִינְגּוֹ", en:"Flamingo" },
-    { e:"🦜", he:"תֻּכִּי",      en:"Parrot" },
-    { e:"🦚", he:"טַוָּס",      en:"Peacock" },
-    { e:"🦉", he:"יַנְשׁוּף",    en:"Owl" },
-    { e:"🦅", he:"נֶשֶׁר",      en:"Eagle" },
-    { e:"🐧", he:"פִּינְגְּוִין",  en:"Penguin" },
-    { e:"🦦", he:"לוּטְרָה",     en:"Otter" },
-    { e:"🦫", he:"בּוֹנֶה",      en:"Beaver" },
-    { e:"🦊", he:"שׁוּעָל",     en:"Fox" },
-    { e:"🐺", he:"זְאֵב",       en:"Wolf" },
-    { e:"🦌", he:"אַיָּל",      en:"Deer" },
-    { e:"🐪", he:"גָּמָל",      en:"Camel" },
-    { e:"🦔", he:"קִיפּוֹד",     en:"Hedgehog" },
-  ];
+/* ===================== נתוני החיות ===================== */
+/* s = סוג הקול שהחיה עושה, p = פרמטרים, t = צבע רקע לכרטיס */
+const ANIMALS = [
+  { e:"🦁", he:"אַרְיֵה",     en:"Lion",      s:"roar",    p:{low:110,dur:0.85}, t:"#ffe2a8" },
+  { e:"🐯", he:"נָמֵר",       en:"Tiger",     s:"roar",    p:{low:150,dur:0.7},  t:"#ffd9a8" },
+  { e:"🐘", he:"פִּיל",        en:"Elephant",  s:"trumpet", p:{},                 t:"#dcd6ee" },
+  { e:"🦒", he:"גִ'ירָפָה",    en:"Giraffe",   s:"hum",     p:{},                 t:"#fff0bf" },
+  { e:"🦓", he:"זֶבְּרָה",      en:"Zebra",     s:"neigh",   p:{},                 t:"#e8e8e8" },
+  { e:"🐒", he:"קוֹף",         en:"Monkey",    s:"monkey",  p:{},                 t:"#ffe0b8" },
+  { e:"🦍", he:"גּוֹרִילָה",    en:"Gorilla",   s:"roar",    p:{low:80,dur:0.9},   t:"#d7d7df" },
+  { e:"🐻", he:"דֹּב",         en:"Bear",      s:"roar",    p:{low:95,dur:0.8},   t:"#e6cfb0" },
+  { e:"🐼", he:"פַּנְדָּה",      en:"Panda",     s:"squeak",  p:{soft:1},           t:"#eeeeee" },
+  { e:"🐨", he:"קוֹאָלָה",      en:"Koala",     s:"grunt",   p:{low:120},          t:"#dcdce4" },
+  { e:"🦘", he:"קֶנְגּוּרוּ",    en:"Kangaroo",  s:"grunt",   p:{low:150},          t:"#ffdcc0" },
+  { e:"🐊", he:"תַּנִּין",       en:"Crocodile", s:"croak",   p:{},                 t:"#cfe8c0" },
+  { e:"🦛", he:"הִיפּוֹפּוֹטָם",  en:"Hippo",     s:"grunt",   p:{low:75,dur:0.5},   t:"#d8d2e2" },
+  { e:"🦏", he:"קַרְנַף",       en:"Rhino",     s:"grunt",   p:{low:90,dur:0.45},  t:"#dadada" },
+  { e:"🐍", he:"נָחָשׁ",        en:"Snake",     s:"hiss",    p:{},                 t:"#d6ecc0" },
+  { e:"🦎", he:"לְטָאָה",       en:"Lizard",    s:"hiss",    p:{soft:1},           t:"#d2ecd0" },
+  { e:"🐢", he:"צָב",          en:"Turtle",    s:"squeak",  p:{soft:1,low:1},     t:"#cfe9d2" },
+  { e:"🦩", he:"פְלָמִינְגּוֹ",   en:"Flamingo",  s:"honk",    p:{},                 t:"#ffd6e6" },
+  { e:"🦜", he:"תֻּכִּי",        en:"Parrot",    s:"tweet",   p:{},                 t:"#cfeede" },
+  { e:"🦚", he:"טַוָּס",        en:"Peacock",   s:"squawk",  p:{},                 t:"#cfe6ee" },
+  { e:"🦉", he:"יַנְשׁוּף",      en:"Owl",       s:"hoot",    p:{},                 t:"#e0d6c4" },
+  { e:"🦅", he:"נֶשֶׁר",        en:"Eagle",     s:"screech", p:{},                 t:"#e2d6c8" },
+  { e:"🐧", he:"פִּינְגְּוִין",    en:"Penguin",   s:"squawk",  p:{hi:1},             t:"#d4e6f0" },
+  { e:"🦦", he:"לוּטְרָה",       en:"Otter",     s:"squeak",  p:{},                 t:"#dfe0d2" },
+  { e:"🦫", he:"בּוֹנֶה",        en:"Beaver",    s:"squeak",  p:{low:1},            t:"#e6d6c2" },
+  { e:"🦊", he:"שׁוּעָל",       en:"Fox",       s:"screech", p:{yip:1},            t:"#ffdcc0" },
+  { e:"🐺", he:"זְאֵב",         en:"Wolf",      s:"howl",    p:{},                 t:"#d6dae4" },
+  { e:"🦌", he:"אַיָּל",        en:"Deer",      s:"grunt",   p:{low:160},          t:"#e8d8c4" },
+  { e:"🐪", he:"גָּמָל",        en:"Camel",     s:"grunt",   p:{low:85,dur:0.7},   t:"#f0e2c2" },
+  { e:"🦔", he:"קִיפּוֹד",       en:"Hedgehog",  s:"squeak",  p:{},                 t:"#e6dcc8" },
+];
 
-  let idx = 0;
+let idx = 0;
 
-  const emojiEl  = document.getElementById("emoji");
-  const nameHeEl = document.getElementById("nameHe");
-  const nameEnEl = document.getElementById("nameEn");
-  const counterEl= document.getElementById("counter");
-  const speakBtn = document.getElementById("speak");
+const emojiEl=document.getElementById("emoji"), nameHeEl=document.getElementById("nameHe"),
+      nameEnEl=document.getElementById("nameEn"), counterEl=document.getElementById("counter"),
+      cardEl=document.getElementById("card"), soundBtn=document.getElementById("sound"),
+      sayBtn=document.getElementById("say");
 
-  /* ----- קול אנגלי ----- */
-  let enVoice = null;
-  function pickVoice() {
-    const voices = speechSynthesis.getVoices();
-    enVoice = voices.find(v => /en[-_]US/i.test(v.lang) && /female|samantha|zira|google/i.test(v.name))
-           || voices.find(v => /^en/i.test(v.lang))
-           || null;
+/* ===================== מנוע קולות חיות (Web Audio) ===================== */
+let AC;
+function ctx(){
+  AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+  if (AC.state==="suspended") AC.resume();
+  return AC;
+}
+function master(c){
+  const comp=c.createDynamicsCompressor(); comp.threshold.value=-12; comp.ratio.value=8;
+  const g=c.createGain(); g.gain.value=0.9;
+  g.connect(comp).connect(c.destination); return g;
+}
+function tone(c,out,o){
+  const {wave="sine",f0,f1=f0,t,dur,peak=0.3,atk=0.012,vibHz=0,vibDepth=0}=o;
+  const osc=c.createOscillator(); osc.type=wave;
+  osc.frequency.setValueAtTime(f0,t);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(1,f1),t+dur);
+  const g=c.createGain();
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(peak,t+atk);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  osc.connect(g).connect(out);
+  if(vibHz){ const l=c.createOscillator(); l.frequency.value=vibHz;
+    const lg=c.createGain(); lg.gain.value=vibDepth; l.connect(lg).connect(osc.frequency);
+    l.start(t); l.stop(t+dur); }
+  osc.start(t); osc.stop(t+dur+0.05);
+}
+function noise(c,out,o){
+  const {t,dur,peak=0.3,type="highpass",freq=1000,f1,q=1}=o;
+  const src=c.createBufferSource();
+  const buf=c.createBuffer(1,Math.max(1,c.sampleRate*dur),c.sampleRate);
+  const d=buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  src.buffer=buf;
+  const f=c.createBiquadFilter(); f.type=type; f.frequency.setValueAtTime(freq,t);
+  if(f1) f.frequency.exponentialRampToValueAtTime(f1,t+dur); f.Q.value=q;
+  const g=c.createGain();
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(peak,t+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  src.connect(f).connect(g).connect(out);
+  src.start(t); src.stop(t+dur);
+}
+
+const RECIPES = {
+  roar(c,out,t,p){ const low=p.low||110, dur=p.dur||0.8;
+    tone(c,out,{wave:"sawtooth",f0:low*1.5,f1:low,t,dur,peak:0.34,vibHz:24,vibDepth:16});
+    noise(c,out,{t,dur,peak:0.12,type:"lowpass",freq:800}); },
+  trumpet(c,out,t){
+    tone(c,out,{wave:"sawtooth",f0:170,f1:520,t,dur:0.18,peak:0.32});
+    tone(c,out,{wave:"sawtooth",f0:520,f1:360,t:t+0.18,dur:0.5,peak:0.3,vibHz:14,vibDepth:50}); },
+  hum(c,out,t){ tone(c,out,{wave:"sine",f0:150,f1:135,t,dur:0.7,peak:0.28,vibHz:6,vibDepth:8}); },
+  neigh(c,out,t){
+    tone(c,out,{wave:"sawtooth",f0:720,f1:340,t,dur:0.55,peak:0.26,vibHz:32,vibDepth:60});
+    noise(c,out,{t,dur:0.55,peak:0.06,type:"bandpass",freq:1200,q:2}); },
+  monkey(c,out,t){ const ps=[700,780,940,860]; ps.forEach((f,i)=>
+    tone(c,out,{wave:"triangle",f0:f,f1:f*1.1,t:t+i*0.12,dur:0.1,peak:0.3})); },
+  grunt(c,out,t,p){ const low=p.low||130, dur=p.dur||0.22;
+    tone(c,out,{wave:"square",f0:low,f1:low*0.8,t,dur,peak:0.3});
+    tone(c,out,{wave:"square",f0:low,f1:low*0.8,t:t+dur+0.08,dur,peak:0.26}); },
+  squeak(c,out,t,p){ const b=p.low?1100:1500, pk=p.soft?0.2:0.3;
+    tone(c,out,{wave:"sine",f0:b,f1:b*1.5,t,dur:0.1,peak:pk});
+    tone(c,out,{wave:"sine",f0:b*1.1,f1:b*1.6,t:t+0.16,dur:0.1,peak:pk}); },
+  hiss(c,out,t,p){ noise(c,out,{t,dur:0.8,peak:p.soft?0.1:0.18,type:"highpass",freq:3000,f1:6500,q:0.7}); },
+  honk(c,out,t){
+    tone(c,out,{wave:"sawtooth",f0:300,f1:240,t,dur:0.16,peak:0.28,vibHz:0});
+    tone(c,out,{wave:"sawtooth",f0:300,f1:240,t:t+0.24,dur:0.18,peak:0.26}); },
+  tweet(c,out,t){ [1900,2500,2100].forEach((f,i)=>
+    tone(c,out,{wave:"sine",f0:f,f1:f*1.3,t:t+i*0.13,dur:0.1,peak:0.26})); },
+  squawk(c,out,t,p){ const b=p.hi?1100:800;
+    tone(c,out,{wave:"sawtooth",f0:b,f1:b*0.7,t,dur:0.18,peak:0.28});
+    noise(c,out,{t,dur:0.18,peak:0.1,type:"bandpass",freq:b*1.5,q:1.5});
+    tone(c,out,{wave:"sawtooth",f0:b,f1:b*0.7,t:t+0.26,dur:0.18,peak:0.25}); },
+  hoot(c,out,t){
+    tone(c,out,{wave:"sine",f0:430,f1:370,t,dur:0.26,peak:0.26,atk:0.05});
+    tone(c,out,{wave:"sine",f0:420,f1:360,t:t+0.4,dur:0.3,peak:0.26,atk:0.05}); },
+  screech(c,out,t,p){ const b=p.yip?1600:2200;
+    tone(c,out,{wave:"sawtooth",f0:b,f1:b*0.6,t,dur:p.yip?0.18:0.4,peak:0.26,vibHz:18,vibDepth:40});
+    noise(c,out,{t,dur:0.3,peak:0.08,type:"highpass",freq:2500}); },
+  howl(c,out,t){
+    tone(c,out,{wave:"sine",f0:300,f1:540,t,dur:0.4,peak:0.3});
+    tone(c,out,{wave:"sine",f0:540,f1:500,t:t+0.4,dur:0.5,peak:0.3,vibHz:7,vibDepth:14});
+    tone(c,out,{wave:"sine",f0:500,f1:320,t:t+0.9,dur:0.4,peak:0.28}); },
+};
+
+function playAnimal(a){
+  const c=ctx(); const out=master(c); const t=c.currentTime+0.03;
+  (RECIPES[a.s]||RECIPES.grunt)(c,out,t,a.p||{});
+  flashBtn(soundBtn, 900);
+}
+
+/* ===================== דיבור באנגלית ===================== */
+let enVoice=null;
+function pickVoice(){
+  const v=speechSynthesis.getVoices();
+  enVoice = v.find(x=>/en[-_]US/i.test(x.lang) && /samantha|female|zira|google/i.test(x.name))
+         || v.find(x=>/^en/i.test(x.lang)) || null;
+}
+if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
+function say(text){
+  if(!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang="en-US"; u.rate=0.78; u.pitch=1.15;
+  if(enVoice) u.voice=enVoice;
+  u.onstart=()=>sayBtn.classList.add("playing");
+  u.onend=()=>sayBtn.classList.remove("playing");
+  speechSynthesis.speak(u);
+  flashBtn(sayBtn,1200);
+}
+function flashBtn(btn,ms){ btn.classList.add("playing"); setTimeout(()=>btn.classList.remove("playing"),ms); }
+
+/* ===================== ניצוצות ===================== */
+function sparkle(x,y){
+  const chars=["✨","⭐","💫","🌟"];
+  for(let i=0;i<6;i++){
+    const s=document.createElement("div");
+    s.className="spark"; s.textContent=chars[i%chars.length];
+    const ang=(Math.PI*2*i)/6, dist=50+Math.random()*40;
+    s.style.left=x+"px"; s.style.top=y+"px";
+    s.style.setProperty("--dx",Math.cos(ang)*dist+"px");
+    s.style.setProperty("--dy",Math.sin(ang)*dist+"px");
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),700);
   }
-  if ('speechSynthesis' in window) {
-    pickVoice();
-    speechSynthesis.onvoiceschanged = pickVoice;
-  }
+}
 
-  function speak(text) {
-    if (!('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    u.rate = 0.78;      // לאט וברור לילדים
-    u.pitch = 1.15;
-    if (enVoice) u.voice = enVoice;
-    u.onstart = () => speakBtn.classList.add("speaking");
-    u.onend   = () => speakBtn.classList.remove("speaking");
-    speechSynthesis.speak(u);
-  }
+/* ===================== הצגה וניווט ===================== */
+function render(anim="pop"){
+  const a=ANIMALS[idx];
+  emojiEl.textContent=a.e; nameHeEl.textContent=a.he; nameEnEl.textContent=a.en;
+  cardEl.style.setProperty("--tint",a.t);
+  counterEl.textContent=`${idx+1} / ${ANIMALS.length}`;
+  emojiEl.classList.remove("pop","wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add(anim);
+  document.querySelectorAll(".tile").forEach((tl,i)=>tl.classList.toggle("active",i===idx));
+}
+function go(step){ idx=(idx+step+ANIMALS.length)%ANIMALS.length; render("pop"); playAnimal(ANIMALS[idx]); }
 
-  /* ----- הצגת חיה ----- */
-  function render(animate = "pop") {
-    const a = ANIMALS[idx];
-    emojiEl.textContent  = a.e;
-    nameHeEl.textContent = a.he;
-    nameEnEl.textContent = a.en;
-    counterEl.textContent = `${idx + 1} / ${ANIMALS.length}`;
-    emojiEl.classList.remove("pop","wiggle");
-    void emojiEl.offsetWidth;            // restart animation
-    emojiEl.classList.add(animate);
-    // סמן ברשת
-    document.querySelectorAll(".tile").forEach((t,i) =>
-      t.classList.toggle("active", i === idx));
-  }
+document.getElementById("next").onclick=()=>go(1);
+document.getElementById("prev").onclick=()=>go(-1);
 
-  function go(step) {
-    idx = (idx + step + ANIMALS.length) % ANIMALS.length;
-    render("pop");
-  }
+soundBtn.onclick=()=>{ playAnimal(ANIMALS[idx]);
+  emojiEl.classList.remove("wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add("wiggle"); };
+sayBtn.onclick=()=>say(ANIMALS[idx].en);
 
-  document.getElementById("next").onclick = () => go(1);
-  document.getElementById("prev").onclick = () => go(-1);
-  speakBtn.onclick = () => { speak(ANIMALS[idx].en); emojiEl.classList.remove("wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add("wiggle"); };
-  emojiEl.onclick = () => speak(ANIMALS[idx].en);
+emojiEl.addEventListener("click",e=>{
+  playAnimal(ANIMALS[idx]);
+  emojiEl.classList.remove("wiggle"); void emojiEl.offsetWidth; emojiEl.classList.add("wiggle");
+  const r=emojiEl.getBoundingClientRect(); sparkle(r.left+r.width/2, r.top+r.height/2);
+});
 
-  /* החלקה עם האצבע */
-  let touchX = null;
-  document.querySelector(".stage").addEventListener("touchstart", e => touchX = e.touches[0].clientX, {passive:true});
-  document.querySelector(".stage").addEventListener("touchend", e => {
-    if (touchX === null) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 50) go(dx > 0 ? 1 : -1); // RTL: החלקה ימינה = הבא
-    touchX = null;
-  }, {passive:true});
+/* החלקה באצבע (RTL: ימינה=הבא) */
+let tx=null;
+const stage=document.querySelector(".stage");
+stage.addEventListener("touchstart",e=>tx=e.touches[0].clientX,{passive:true});
+stage.addEventListener("touchend",e=>{
+  if(tx===null) return;
+  const dx=e.changedTouches[0].clientX-tx;
+  if(Math.abs(dx)>50) go(dx>0?1:-1);
+  tx=null;
+},{passive:true});
 
-  /* ----- רשת כל החיות ----- */
-  const grid = document.getElementById("grid");
-  ANIMALS.forEach((a, i) => {
-    const t = document.createElement("button");
-    t.className = "tile";
-    t.innerHTML = `<div class="te">${a.e}</div><div class="tn">${a.he}</div>`;
-    t.onclick = () => { idx = i; render("pop"); speak(a.en); closeSheet(); };
-    grid.appendChild(t);
-  });
+/* ===================== רשת כל החיות ===================== */
+const grid=document.getElementById("grid");
+ANIMALS.forEach((a,i)=>{
+  const tl=document.createElement("button");
+  tl.className="tile";
+  tl.innerHTML=`<div class="te">${a.e}</div><div class="tn">${a.he}</div>`;
+  tl.onclick=()=>{ idx=i; render("pop"); playAnimal(a); closeSheet(); };
+  grid.appendChild(tl);
+});
+const sheet=document.getElementById("sheet");
+function openSheet(){ sheet.classList.add("open"); }
+function closeSheet(){ sheet.classList.remove("open"); }
+document.getElementById("openAll").onclick=openSheet;
+document.getElementById("closeSheet").onclick=closeSheet;
+sheet.addEventListener("click",e=>{ if(e.target===sheet) closeSheet(); });
 
-  const sheet = document.getElementById("sheet");
-  function openSheet()  { sheet.classList.add("open"); }
-  function closeSheet() { sheet.classList.remove("open"); }
-  document.getElementById("openAll").onclick   = openSheet;
-  document.getElementById("closeSheet").onclick = closeSheet;
-  sheet.addEventListener("click", e => { if (e.target === sheet) closeSheet(); });
-
-  render("pop");
+render("pop");
 </script>
 </body>
 </html>
