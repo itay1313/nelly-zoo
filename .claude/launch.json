@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "nelly",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4188"],
+      "port": 4188,
+      "autoPort": false
+    }
+  ]
+}

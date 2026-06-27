@@ -205,34 +205,34 @@
 /* ===================== נתוני החיות ===================== */
 /* s = סוג הקול שהחיה עושה, p = פרמטרים, t = צבע רקע לכרטיס */
 const ANIMALS = [
-  { e:"🦁", he:"אַרְיֵה",     en:"Lion",      s:"roar",    p:{low:110,dur:0.85}, t:"#ffe2a8" },
-  { e:"🐯", he:"נָמֵר",       en:"Tiger",     s:"roar",    p:{low:150,dur:0.7},  t:"#ffd9a8" },
-  { e:"🐘", he:"פִּיל",        en:"Elephant",  s:"trumpet", p:{},                 t:"#dcd6ee" },
-  { e:"🦒", he:"גִ'ירָפָה",    en:"Giraffe",   s:"hum",     p:{},                 t:"#fff0bf" },
-  { e:"🦓", he:"זֶבְּרָה",      en:"Zebra",     s:"neigh",   p:{},                 t:"#e8e8e8" },
-  { e:"🐒", he:"קוֹף",         en:"Monkey",    s:"monkey",  p:{},                 t:"#ffe0b8" },
+  { e:"🦁", he:"אַרְיֵה",     en:"Lion",      f:"lion.mp3",      t:"#ffe2a8" },
+  { e:"🐯", he:"נָמֵר",       en:"Tiger",     f:"tiger.mp3",     t:"#ffd9a8" },
+  { e:"🐘", he:"פִּיל",        en:"Elephant",  f:"elephant.mp3",  t:"#dcd6ee" },
+  { e:"🦒", he:"גִ'ירָפָה",    en:"Giraffe",   f:"giraffe.mp3",   t:"#fff0bf" },
+  { e:"🦓", he:"זֶבְּרָה",      en:"Zebra",     f:"zebra.mp3",     t:"#e8e8e8" },
+  { e:"🐒", he:"קוֹף",         en:"Monkey",    f:"monkey.mp3",    t:"#ffe0b8" },
   { e:"🦍", he:"גּוֹרִילָה",    en:"Gorilla",   s:"roar",    p:{low:80,dur:0.9},   t:"#d7d7df" },
-  { e:"🐻", he:"דֹּב",         en:"Bear",      s:"roar",    p:{low:95,dur:0.8},   t:"#e6cfb0" },
+  { e:"🐻", he:"דֹּב",         en:"Bear",      f:"bear.mp3",      t:"#e6cfb0" },
   { e:"🐼", he:"פַּנְדָּה",      en:"Panda",     s:"squeak",  p:{soft:1},           t:"#eeeeee" },
   { e:"🐨", he:"קוֹאָלָה",      en:"Koala",     s:"grunt",   p:{low:120},          t:"#dcdce4" },
   { e:"🦘", he:"קֶנְגּוּרוּ",    en:"Kangaroo",  s:"grunt",   p:{low:150},          t:"#ffdcc0" },
-  { e:"🐊", he:"תַּנִּין",       en:"Crocodile", s:"croak",   p:{},                 t:"#cfe8c0" },
+  { e:"🐊", he:"תַּנִּין",       en:"Crocodile", f:"crocodile.mp3", t:"#cfe8c0" },
   { e:"🦛", he:"הִיפּוֹפּוֹטָם",  en:"Hippo",     s:"grunt",   p:{low:75,dur:0.5},   t:"#d8d2e2" },
   { e:"🦏", he:"קַרְנַף",       en:"Rhino",     s:"grunt",   p:{low:90,dur:0.45},  t:"#dadada" },
-  { e:"🐍", he:"נָחָשׁ",        en:"Snake",     s:"hiss",    p:{},                 t:"#d6ecc0" },
-  { e:"🦎", he:"לְטָאָה",       en:"Lizard",    s:"hiss",    p:{soft:1},           t:"#d2ecd0" },
+  { e:"🐍", he:"נָחָשׁ",        en:"Snake",     f:"snake.mp3",     t:"#d6ecc0" },
+  { e:"🦎", he:"לְטָאָה",       en:"Lizard",    f:"lizard.wav",    t:"#d2ecd0" },
   { e:"🐢", he:"צָב",          en:"Turtle",    s:"squeak",  p:{soft:1,low:1},     t:"#cfe9d2" },
-  { e:"🦩", he:"פְלָמִינְגּוֹ",   en:"Flamingo",  s:"honk",    p:{},                 t:"#ffd6e6" },
+  { e:"🦩", he:"פְלָמִינְגּוֹ",   en:"Flamingo",  f:"flamingo.wav",  t:"#ffd6e6" },
   { e:"🦜", he:"תֻּכִּי",        en:"Parrot",    s:"tweet",   p:{},                 t:"#cfeede" },
-  { e:"🦚", he:"טַוָּס",        en:"Peacock",   s:"squawk",  p:{},                 t:"#cfe6ee" },
-  { e:"🦉", he:"יַנְשׁוּף",      en:"Owl",       s:"hoot",    p:{},                 t:"#e0d6c4" },
-  { e:"🦅", he:"נֶשֶׁר",        en:"Eagle",     s:"screech", p:{},                 t:"#e2d6c8" },
+  { e:"🦚", he:"טַוָּס",        en:"Peacock",   f:"peacock.mp3",   t:"#cfe6ee" },
+  { e:"🦉", he:"יַנְשׁוּף",      en:"Owl",       f:"owl.mp3",       t:"#e0d6c4" },
+  { e:"🦅", he:"נֶשֶׁר",        en:"Eagle",     f:"eagle.mp3",     t:"#e2d6c8" },
   { e:"🐧", he:"פִּינְגְּוִין",    en:"Penguin",   s:"squawk",  p:{hi:1},             t:"#d4e6f0" },
   { e:"🦦", he:"לוּטְרָה",       en:"Otter",     s:"squeak",  p:{},                 t:"#dfe0d2" },
   { e:"🦫", he:"בּוֹנֶה",        en:"Beaver",    s:"squeak",  p:{low:1},            t:"#e6d6c2" },
-  { e:"🦊", he:"שׁוּעָל",       en:"Fox",       s:"screech", p:{yip:1},            t:"#ffdcc0" },
-  { e:"🐺", he:"זְאֵב",         en:"Wolf",      s:"howl",    p:{},                 t:"#d6dae4" },
-  { e:"🦌", he:"אַיָּל",        en:"Deer",      s:"grunt",   p:{low:160},          t:"#e8d8c4" },
+  { e:"🦊", he:"שׁוּעָל",       en:"Fox",       f:"fox.mp3",       t:"#ffdcc0" },
+  { e:"🐺", he:"זְאֵב",         en:"Wolf",      f:"wolf.mp3",      t:"#d6dae4" },
+  { e:"🦌", he:"אַיָּל",        en:"Deer",      f:"deer.mp3",      t:"#e8d8c4" },
   { e:"🐪", he:"גָּמָל",        en:"Camel",     s:"grunt",   p:{low:85,dur:0.7},   t:"#f0e2c2" },
   { e:"🦔", he:"קִיפּוֹד",       en:"Hedgehog",  s:"squeak",  p:{},                 t:"#e6dcc8" },
 ];
@@ -327,10 +327,28 @@ const RECIPES = {
     tone(c,out,{wave:"sine",f0:500,f1:320,t:t+0.9,dur:0.4,peak:0.28}); },
 };
 
+/* נגן קובץ קול אמיתי, מוגבל ל-5 שניות, ללא חפיפה בין צלילים */
+let curAudio=null, capTimer=null;
+const audioCache={};
+function stopAudio(){
+  clearTimeout(capTimer);
+  if(curAudio){ try{ curAudio.pause(); curAudio.currentTime=0; }catch(e){} curAudio=null; }
+}
+function playFile(f){
+  stopAudio();
+  let a=audioCache[f];
+  if(!a){ a=new Audio("sounds/"+f); a.preload="auto"; audioCache[f]=a; }
+  try{ a.currentTime=0; }catch(e){}
+  a.play().catch(()=>{});
+  curAudio=a;
+  capTimer=setTimeout(()=>{ try{ a.pause(); a.currentTime=0; }catch(e){} }, 5000);
+}
 function playAnimal(a){
-  const c=ctx(); const out=master(c); const t=c.currentTime+0.03;
-  (RECIPES[a.s]||RECIPES.grunt)(c,out,t,a.p||{});
   flashBtn(soundBtn, 900);
+  if("speechSynthesis" in window) speechSynthesis.cancel();  // לעצור דיבור אנגלית
+  if(a.f){ playFile(a.f); return; }                 // קול אמיתי
+  const c=ctx(); const out=master(c);               // פולבק מסונתז
+  (RECIPES[a.s]||RECIPES.grunt)(c,out,c.currentTime+0.03,a.p||{});
 }
 
 /* ===================== דיבור באנגלית ===================== */
@@ -343,6 +361,7 @@ function pickVoice(){
 if("speechSynthesis" in window){ pickVoice(); speechSynthesis.onvoiceschanged=pickVoice; }
 function say(text){
   if(!("speechSynthesis" in window)) return;
+  stopAudio();                       // לעצור קול חיה אם מתנגן
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang="en-US"; u.rate=0.78; u.pitch=1.15;
