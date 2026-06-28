@@ -19,6 +19,7 @@ https://commons.wikimedia.org/
 - שועל — "Red Fox (Vulpes vulpes) (W1CDR0001529 BD12)"
 - לטאה — "Gekko gecko"
 - פלמינגו — "Greater flamingo call recorded in March 2005 at Mayani, Satara"
+- ברווז — "Anas platyrhynchos - Mallard (XC62258)" (מקור: xeno-canto דרך Wikimedia Commons)
 
 ## חיות עם קול זמני (מסונתז)
 לחיות הבאות עדיין אין הקלטה אמיתית והן משתמשות בקול מסונתז זמני:
