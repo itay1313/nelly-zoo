@@ -14,6 +14,9 @@
 <meta property="og:description" content="אפליקציית למידה לילדים — חיות עם קולות ותמונות">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
 <title>גן החיות של נלי</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
@@ -48,7 +51,7 @@
                radial-gradient(120% 90px at 80% 100%,#6cc94d 60%,transparent 61%); }
 
   /* ---------- תוכן ---------- */
-  header,.stage,.counter,.all-btn { position:relative; z-index:1; }
+  header,.stage,.progress-wrap,.all-btn { position:relative; z-index:1; }
   header { flex:0 0 auto; text-align:center; padding:12px 10px 4px; }
   header h1 {
     font-size:clamp(24px,7vw,40px); color:#fff; font-weight:800; letter-spacing:1px;
@@ -105,14 +108,20 @@
     75%{transform:rotate(10deg) scale(1.08)}
   }
 
-  .name-he { font-size:clamp(28px,8vw,44px); font-weight:800; color:#3a3a5a; }
+  .name-he {
+    font-size:clamp(28px,8vw,44px); font-weight:800; color:#3a3a5a;
+    cursor:pointer; border-radius:12px; padding:2px 10px;
+    transition:background .15s;
+  }
+  .name-he:active { background:rgba(0,0,0,.06); }
+  .name-he-hint { font-size:13px; color:#aaa; margin-top:-4px; }
   .name-en { font-size:clamp(18px,5.5vw,28px); font-weight:700; color:#ff5d9e; direction:ltr; }
 
   /* ---------- כפתורים ---------- */
   .actions { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; justify-content:center; }
   .btn {
     border:none; font-family:inherit; font-weight:800; cursor:pointer;
-    border-radius:999px; padding:13px 18px; font-size:clamp(16px,4.4vw,20px);
+    border-radius:999px; padding:13px 18px; font-size:clamp(15px,4vw,19px);
     display:inline-flex; align-items:center; gap:8px;
     transition:transform .08s,box-shadow .08s;
   }
@@ -120,6 +129,9 @@
   .btn-sound { background:linear-gradient(180deg,#ffd93d,#ffae3b); color:#7a4d00;
     box-shadow:0 7px 0 #e0921f,0 10px 16px rgba(0,0,0,.18); }
   .btn-sound:active { box-shadow:0 2px 0 #e0921f; }
+  .btn-say-he { background:linear-gradient(180deg,#b8f5a0,#5ed43a); color:#1a5200;
+    box-shadow:0 7px 0 #3a9020,0 10px 16px rgba(0,0,0,.18); }
+  .btn-say-he:active { box-shadow:0 2px 0 #3a9020; }
   .btn-say { background:linear-gradient(180deg,#6fe3ff,#3bb6ff); color:#054a73;
     box-shadow:0 7px 0 #1f8fd0,0 10px 16px rgba(0,0,0,.18); }
   .btn-say:active { box-shadow:0 2px 0 #1f8fd0; }
@@ -134,8 +146,26 @@
     font-size:22px; color:#5b5b80; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .arrow:active { transform:translateY(4px); box-shadow:0 1px 0 rgba(0,0,0,.12); }
 
-  .counter { flex:0 0 auto; text-align:center; color:#fff; font-weight:800; font-size:15px;
-    padding:2px 0 4px; text-shadow:0 1px 2px rgba(0,0,0,.2); }
+  /* ---------- פס התקדמות ---------- */
+  .progress-wrap {
+    flex:0 0 auto; padding:4px 20px 2px;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+  }
+  .progress-label {
+    color:#fff; font-weight:800; font-size:14px;
+    text-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+  .progress-track {
+    width:160px; height:10px; background:rgba(255,255,255,.35);
+    border-radius:999px; overflow:hidden;
+  }
+  .progress-fill {
+    height:100%; border-radius:999px;
+    background:linear-gradient(90deg,#ffd93d,#ff9ec4);
+    transition:width .4s cubic-bezier(.2,.9,.3,1.2);
+    width:0%;
+  }
+
   .all-btn { flex:0 0 auto; margin:0 auto 12px; background:#fff; border:none; border-radius:999px;
     padding:11px 24px; font-family:inherit; font-size:17px; font-weight:800; color:#3a3a5a;
     box-shadow:0 6px 0 rgba(0,0,0,.12); cursor:pointer; }
@@ -167,7 +197,7 @@
   .tile:active { transform:scale(.9); }
   .tile.active { border-color:#ffae3b; background:#fff6e0; }
   .tile .te { font-size:40px; line-height:1; }
-  .tile .tn { font-size:13px; font-weight:700; color:#3a3a5a; margin-top:3px; }
+  .tile .tn { font-size:16px; font-weight:700; color:#3a3a5a; margin-top:4px; }
 
   /* ---------- אינדיקטור טעינת קול ---------- */
   #loadingDot {
@@ -177,6 +207,30 @@
     animation:blink .6s ease infinite;
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+  /* ---------- חגיגה ---------- */
+  .celebrate {
+    position:fixed; inset:0; z-index:100;
+    background:rgba(30,20,60,.6); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center;
+    animation:fade .3s ease;
+  }
+  .celebrate-inner {
+    background:#fff; border-radius:36px; padding:36px 32px 28px;
+    text-align:center; max-width:320px; width:88%;
+    box-shadow:0 24px 0 rgba(0,0,0,.1),0 28px 48px rgba(60,60,120,.3);
+    animation:pop .6s cubic-bezier(.2,.9,.3,1.4);
+  }
+  .celebrate-emoji { font-size:72px; line-height:1; margin-bottom:12px; }
+  .celebrate-title { font-size:32px; font-weight:800; color:#3a3a5a; margin-bottom:8px; }
+  .celebrate-sub { font-size:18px; color:#888; margin-bottom:24px; }
+  .celebrate-btn {
+    border:none; font-family:inherit; font-weight:800; cursor:pointer;
+    border-radius:999px; padding:14px 28px; font-size:18px;
+    background:linear-gradient(180deg,#ffd93d,#ffae3b); color:#7a4d00;
+    box-shadow:0 7px 0 #e0921f; transition:transform .08s,box-shadow .08s;
+  }
+  .celebrate-btn:active { transform:translateY(5px); box-shadow:0 2px 0 #e0921f; }
 </style>
 </head>
 <body>
@@ -201,16 +255,22 @@
       <img class="animal-photo" id="animalPhoto" alt="">
       <div class="animal-emoji" id="emoji">🦁</div>
     </div>
-    <div class="name-he" id="nameHe">אַרְיֵה</div>
+    <div class="name-he" id="nameHe" title="לחץ לשמוע בעברית">אַרְיֵה</div>
     <div class="name-en" id="nameEn">Lion</div>
     <div class="actions">
       <button class="btn btn-sound" id="sound">🐾 איזה קול?</button>
-      <button class="btn btn-say" id="say">🔊 איך אומרים?</button>
+      <button class="btn btn-say-he" id="sayHe">🗣️ בעברית</button>
+      <button class="btn btn-say" id="say">🔊 English</button>
     </div>
   </div>
 </div>
 
-<div class="counter" id="counter"></div>
+<div class="progress-wrap">
+  <div class="progress-label" id="counter"></div>
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
 <button class="all-btn" id="openAll">🐘 כל החיות</button>
 
 <div class="sheet" id="sheet">
@@ -224,12 +284,6 @@
 </div>
 
 <script>
-/* ============================================================
-   נתוני החיות
-   f  = קובץ קול אמיתי (ב-sounds/)
-   s  = סינתטי (פולבק)
-   wiki = שם דף Wikipedia לתמונה
-============================================================ */
 const ANIMALS = [
   { e:"🦁", he:"אַרְיֵה",      en:"Lion",       wiki:"Lion",                  f:"lion.mp3",      t:"#ffe2a8" },
   { e:"🐯", he:"נָמֵר",        en:"Tiger",      wiki:"Tiger",                 f:"tiger.mp3",     t:"#ffd9a8" },
@@ -237,19 +291,19 @@ const ANIMALS = [
   { e:"🦒", he:"גִ'ירָפָה",     en:"Giraffe",    wiki:"Giraffe",               f:"giraffe.mp3",   t:"#fff0bf" },
   { e:"🦓", he:"זֶבְּרָה",       en:"Zebra",      wiki:"Zebra",                 f:"zebra.mp3",     t:"#e8e8e8" },
   { e:"🐒", he:"קוֹף",          en:"Monkey",     wiki:"Macaque",               f:"monkey.mp3",    t:"#ffe0b8" },
-  { e:"🦍", he:"גּוֹרִילָה",     en:"Gorilla",    wiki:"Gorilla",               f:"gorilla.mp3",             t:"#d7d7df" },
+  { e:"🦍", he:"גּוֹרִילָה",     en:"Gorilla",    wiki:"Gorilla",               f:"gorilla.mp3",   t:"#d7d7df" },
   { e:"🐻", he:"דֹּב",          en:"Bear",       wiki:"Brown bear",            f:"bear.mp3",      t:"#e6cfb0" },
   { e:"🐼", he:"פַּנְדָּה",       en:"Panda",      wiki:"Giant panda",           s:"squeak",p:{soft:1},           t:"#eeeeee" },
   { e:"🐨", he:"קוֹאָלָה",       en:"Koala",      wiki:"Koala",                 s:"grunt", p:{low:120},          t:"#dcdce4" },
   { e:"🦘", he:"קֶנְגּוּרוּ",     en:"Kangaroo",   wiki:"Kangaroo",              s:"grunt", p:{low:150},          t:"#ffdcc0" },
   { e:"🐊", he:"תַּנִּין",        en:"Crocodile",  wiki:"Crocodile",             f:"crocodile.mp3", t:"#cfe8c0" },
-  { e:"🦛", he:"הִיפּוֹפּוֹטָם",   en:"Hippo",      wiki:"Hippopotamus",          f:"hippo.mp3",               t:"#d8d2e2" },
+  { e:"🦛", he:"הִיפּוֹפּוֹטָם",   en:"Hippo",      wiki:"Hippopotamus",          f:"hippo.mp3",     t:"#d8d2e2" },
   { e:"🦏", he:"קַרְנַף",        en:"Rhino",      wiki:"Rhinoceros",            s:"grunt", p:{low:90,dur:0.45}, t:"#dadada" },
   { e:"🐍", he:"נָחָשׁ",         en:"Snake",      wiki:"Snake",                 f:"snake.mp3",     t:"#d6ecc0" },
   { e:"🦎", he:"לְטָאָה",        en:"Lizard",     wiki:"Tokay gecko",           f:"lizard.wav",    t:"#d2ecd0" },
   { e:"🐢", he:"צָב",           en:"Turtle",     wiki:"Turtle",                s:"squeak",p:{soft:1,low:1},      t:"#cfe9d2" },
   { e:"🦩", he:"פְלָמִינְגּוֹ",    en:"Flamingo",   wiki:"Flamingo",              f:"flamingo.wav",  t:"#ffd6e6" },
-  { e:"🦜", he:"תֻּכִּי",         en:"Parrot",     wiki:"Parrot",                f:"parrot.mp3",              t:"#cfeede" },
+  { e:"🦜", he:"תֻּכִּי",         en:"Parrot",     wiki:"Parrot",                f:"parrot.mp3",    t:"#cfeede" },
   { e:"🦚", he:"טַוָּס",         en:"Peacock",    wiki:"Peafowl",               f:"peacock.mp3",   t:"#cfe6ee" },
   { e:"🦉", he:"יַנְשׁוּף",       en:"Owl",        wiki:"Owl",                   f:"owl.mp3",       t:"#e0d6c4" },
   { e:"🦅", he:"נֶשֶׁר",         en:"Eagle",      wiki:"Eagle",                 f:"eagle.mp3",     t:"#e2d6c8" },
@@ -264,20 +318,24 @@ const ANIMALS = [
 ];
 
 let idx = 0;
+const visited = new Set();
+let celebrated = false;
 
-const nameHeEl  = document.getElementById("nameHe");
-const nameEnEl  = document.getElementById("nameEn");
-const counterEl = document.getElementById("counter");
-const cardEl    = document.getElementById("card");
-const soundBtn  = document.getElementById("sound");
-const sayBtn    = document.getElementById("say");
-const animalView= document.getElementById("animalView");
-const animalPhoto=document.getElementById("animalPhoto");
-const emojiEl   = document.getElementById("emoji");
-const loadingDot= document.getElementById("loadingDot");
+const nameHeEl   = document.getElementById("nameHe");
+const nameEnEl   = document.getElementById("nameEn");
+const counterEl  = document.getElementById("counter");
+const progressEl = document.getElementById("progressFill");
+const cardEl     = document.getElementById("card");
+const soundBtn   = document.getElementById("sound");
+const sayHeBtn   = document.getElementById("sayHe");
+const sayBtn     = document.getElementById("say");
+const animalView = document.getElementById("animalView");
+const animalPhoto= document.getElementById("animalPhoto");
+const emojiEl    = document.getElementById("emoji");
+const loadingDot = document.getElementById("loadingDot");
 
 /* ============================================================
-   Web Audio — שניהם: סינתטי + קבצים אמיתיים
+   Web Audio
 ============================================================ */
 let AC;
 function ctx() {
@@ -286,9 +344,8 @@ function ctx() {
   return AC;
 }
 
-/* -- קולות אמיתיים: fetch → decodeAudioData → BufferSource -- */
-const soundBufs  = {};   // filename → decoded AudioBuffer
-const soundFetch = {};   // filename → Promise (in-flight)
+const soundBufs  = {};
+const soundFetch = {};
 let   curSrc = null, capTimer = null;
 
 function stopSound() {
@@ -298,16 +355,14 @@ function stopSound() {
 }
 
 async function playFile(filename) {
-  const c = ctx();           // ← unlock AudioContext עכשיו, סינכרוני בתוך הלחיצה
+  const c = ctx();
   stopSound();
 
-  // אם הבאפר כבר בזיכרון — נגן מיד
   if (soundBufs[filename]) {
     _startBuffer(c, soundBufs[filename]);
     return;
   }
 
-  // טעינה (עם אינדיקטור)
   loadingDot.style.display = "block";
 
   if (!soundFetch[filename]) {
@@ -338,7 +393,6 @@ function _startBuffer(c, buf) {
   }, 5000);
 }
 
-/* -- קולות סינתטיים (פולבק לחיות ללא קובץ) -- */
 function master(c) {
   const comp = c.createDynamicsCompressor();
   comp.threshold.value = -12; comp.ratio.value = 8;
@@ -393,7 +447,7 @@ const RECIPES={
 function playAnimal(a) {
   if ("speechSynthesis" in window) speechSynthesis.cancel();
   if (a.f) {
-    playFile(a.f);  // Web Audio async — AudioContext נפתח למעלה סינכרונית
+    playFile(a.f);
   } else {
     const c = ctx(), out = master(c), t = c.currentTime + 0.03;
     (RECIPES[a.s] || RECIPES.grunt)(c, out, t, a.p || {});
@@ -402,10 +456,10 @@ function playAnimal(a) {
 }
 
 /* ============================================================
-   תמונות אמיתיות — Wikipedia REST API + localStorage cache
+   תמונות — Wikipedia REST API + localStorage cache
 ============================================================ */
-const IMG_V   = "nelly3_";
-const imgMem  = {};   // en → url (in-memory)
+const IMG_V  = "nelly3_";
+const imgMem = {};
 
 async function getPhoto(a) {
   if (imgMem[a.en]) return imgMem[a.en];
@@ -417,13 +471,12 @@ async function getPhoto(a) {
     const wikiTitle = encodeURIComponent(a.wiki || a.en);
     const r = await fetch(
       `https://en.wikipedia.org/api/rest_v1/page/summary/${wikiTitle}`,
-      { headers: { "Api-User-Agent": "NellyZoo/1.0 (kids-edu; itaycode@gmail.com)" } }
+      { headers: { "Api-User-Agent": "NellyZoo/1.0 (kids-edu)" } }
     );
     if (!r.ok) return null;
     const d = await r.json();
     let url = d.thumbnail?.source || null;
     if (url) {
-      // הגדל לרזולוציה טובה יותר
       url = url.replace(/\/\d+px-/, "/500px-");
       localStorage.setItem(lsKey, url);
       imgMem[a.en] = url;
@@ -439,7 +492,7 @@ function loadPhoto(a) {
   animalPhoto.src = "";
 
   getPhoto(a).then(url => {
-    if (!url || ANIMALS[idx].en !== a.en) return;  // דף השתנה
+    if (!url || ANIMALS[idx].en !== a.en) return;
     const img = new Image();
     img.onload = () => {
       if (ANIMALS[idx].en !== a.en) return;
@@ -467,15 +520,54 @@ function sparkle(x, y) {
 }
 
 /* ============================================================
+   חגיגה — כל החיות נראו!
+============================================================ */
+function celebrate() {
+  const overlay = document.createElement("div");
+  overlay.className = "celebrate";
+  overlay.innerHTML = `
+    <div class="celebrate-inner">
+      <div class="celebrate-emoji">🎉</div>
+      <div class="celebrate-title">כל הכבוד נלי!</div>
+      <div class="celebrate-sub">ראית את כל ${ANIMALS.length} החיות בגן!</div>
+      <button class="celebrate-btn" id="celebrateClose">עוד פעם! 🔄</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById("celebrateClose").onclick = () => {
+    overlay.remove();
+    celebrated = false;
+  };
+
+  for (let i = 0; i < 24; i++) {
+    setTimeout(() => sparkle(
+      Math.random() * window.innerWidth,
+      Math.random() * window.innerHeight * 0.8
+    ), i * 60);
+  }
+}
+
+function checkCelebrate() {
+  if (!celebrated && visited.size === ANIMALS.length) {
+    celebrated = true;
+    setTimeout(celebrate, 800);
+  }
+}
+
+/* ============================================================
    הצגה וניווט
 ============================================================ */
 function render(anim = "pop") {
   const a = ANIMALS[idx];
+  visited.add(idx);
+
   emojiEl.textContent  = a.e;
   nameHeEl.textContent = a.he;
   nameEnEl.textContent = a.en;
   cardEl.style.setProperty("--tint", a.t);
-  counterEl.textContent = `${idx + 1} / ${ANIMALS.length}`;
+
+  const pct = (visited.size / ANIMALS.length * 100).toFixed(0);
+  progressEl.style.width = pct + "%";
+  counterEl.textContent  = `חיה ${idx + 1} מתוך ${ANIMALS.length}`;
 
   animalView.classList.remove("pop", "wiggle");
   void animalView.offsetWidth;
@@ -491,30 +583,34 @@ function go(step) {
   idx = (idx + step + ANIMALS.length) % ANIMALS.length;
   render("pop");
   playAnimal(ANIMALS[idx]);
+  checkCelebrate();
 }
 
 /* ============================================================
-   דיבור באנגלית
+   דיבור — עברית ואנגלית
 ============================================================ */
-let enVoice = null;
-function pickVoice() {
+let enVoice = null, heVoice = null;
+
+function pickVoices() {
   const v = speechSynthesis.getVoices();
   enVoice = v.find(x => /en[-_]US/i.test(x.lang) && /samantha|female|zira|google/i.test(x.name))
          || v.find(x => /^en/i.test(x.lang)) || null;
+  heVoice = v.find(x => /he[-_]IL|he[-_]il/i.test(x.lang))
+         || v.find(x => /^he/i.test(x.lang)) || null;
 }
-if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+if ("speechSynthesis" in window) { pickVoices(); speechSynthesis.onvoiceschanged = pickVoices; }
 
-function say(text) {
+function say(text, lang, voice, btn) {
   if (!("speechSynthesis" in window)) return;
   stopSound();
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US"; u.rate = 0.78; u.pitch = 1.15;
-  if (enVoice) u.voice = enVoice;
-  u.onstart = () => sayBtn.classList.add("playing");
-  u.onend   = () => sayBtn.classList.remove("playing");
+  u.lang = lang; u.rate = 0.78; u.pitch = 1.15;
+  if (voice) u.voice = voice;
+  u.onstart = () => btn.classList.add("playing");
+  u.onend   = () => btn.classList.remove("playing");
   speechSynthesis.speak(u);
-  flashBtn(sayBtn, 1200);
+  flashBtn(btn, 1400);
 }
 
 function flashBtn(btn, ms) {
@@ -532,7 +628,11 @@ soundBtn.onclick = () => {
   playAnimal(ANIMALS[idx]);
   animalView.classList.remove("wiggle"); void animalView.offsetWidth; animalView.classList.add("wiggle");
 };
-sayBtn.onclick = () => say(ANIMALS[idx].en);
+
+sayHeBtn.onclick = () => say(ANIMALS[idx].he, "he-IL", heVoice, sayHeBtn);
+sayBtn.onclick   = () => say(ANIMALS[idx].en, "en-US", enVoice, sayBtn);
+
+nameHeEl.addEventListener("click", () => say(ANIMALS[idx].he, "he-IL", heVoice, sayHeBtn));
 
 animalView.addEventListener("click", e => {
   playAnimal(ANIMALS[idx]);
@@ -551,6 +651,16 @@ document.querySelector(".stage").addEventListener("touchend", e => {
   tx = null;
 }, { passive: true });
 
+// מקלדת
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft")  go(1);
+  if (e.key === "ArrowRight") go(-1);
+  if (e.key === " " || e.key === "Enter") {
+    playAnimal(ANIMALS[idx]);
+    animalView.classList.remove("wiggle"); void animalView.offsetWidth; animalView.classList.add("wiggle");
+  }
+});
+
 /* ============================================================
    רשת כל החיות
 ============================================================ */
@@ -559,7 +669,10 @@ ANIMALS.forEach((a, i) => {
   const tl = document.createElement("button");
   tl.className = "tile";
   tl.innerHTML = `<div class="te">${a.e}</div><div class="tn">${a.he}</div>`;
-  tl.onclick = () => { idx = i; render("pop"); playAnimal(a); closeSheet(); };
+  tl.onclick = () => {
+    idx = i; render("pop"); playAnimal(a); closeSheet();
+    checkCelebrate();
+  };
   grid.appendChild(tl);
 });
 
@@ -570,11 +683,10 @@ document.getElementById("openAll").onclick    = openSheet;
 document.getElementById("closeSheet").onclick = closeSheet;
 sheet.addEventListener("click", e => { if (e.target === sheet) closeSheet(); });
 
-// טען תמונות של החיות הסמוכות ברקע
 function preloadAdjacent() {
   [1, -1, 2, -2].forEach(d => {
     const i = (idx + d + ANIMALS.length) % ANIMALS.length;
-    getPhoto(ANIMALS[i]); // cache only, no display
+    getPhoto(ANIMALS[i]);
   });
 }
 
