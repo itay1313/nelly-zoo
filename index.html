@@ -118,7 +118,9 @@
   .name-en { font-size:clamp(16px,5vw,28px); font-weight:700; color:#ff5d9e; direction:ltr; }
 
   /* ---------- כפתורים ---------- */
-  .actions { display:flex; gap:clamp(6px,1.6vw,10px); margin-top:4px; flex-wrap:wrap; justify-content:center; }
+  .actions { display:flex; flex-direction:column; align-items:center; gap:clamp(6px,1.2vh,10px); margin-top:4px; width:100%; }
+  .say-row { display:flex; gap:clamp(8px,2vw,12px); width:100%; max-width:340px; justify-content:center; }
+  .say-row .btn { flex:1 1 0; justify-content:center; min-width:0; }
   .btn {
     border:none; font-family:inherit; font-weight:800; cursor:pointer;
     border-radius:999px; padding:clamp(9px,1.6vh,13px) clamp(12px,3.4vw,18px); font-size:clamp(14px,3.6vw,19px);
@@ -327,8 +329,10 @@
     <div class="name-en" id="nameEn">Lion</div>
     <div class="actions">
       <button class="btn btn-sound" id="sound">🐾 איזה קול?</button>
-      <button class="btn btn-say-he" id="sayHe">🗣️ בעברית</button>
-      <button class="btn btn-say" id="say">🔊 English</button>
+      <div class="say-row">
+        <button class="btn btn-say-he" id="sayHe">🗣️ עברית</button>
+        <button class="btn btn-say" id="say">🔊 English</button>
+      </div>
     </div>
   </div>
 </div>
@@ -670,26 +674,36 @@ function go(step) {
 /* ============================================================
    דיבור — עברית ואנגלית
 ============================================================ */
-let enVoice = null, heVoice = null;
+let voices = [];
+function loadVoices() { voices = speechSynthesis.getVoices() || []; }
+if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
 
-function pickVoices() {
-  const v = speechSynthesis.getVoices();
-  enVoice = v.find(x => /en[-_]US/i.test(x.lang) && /samantha|female|zira|google/i.test(x.name))
-         || v.find(x => /^en/i.test(x.lang)) || null;
-  heVoice = v.find(x => /he[-_]IL|he[-_]il/i.test(x.lang))
-         || v.find(x => /^he/i.test(x.lang)) || null;
+// בחירת קול מתאים לשפה — נפתר מחדש בכל לחיצה (הרשימה לפעמים ריקה בטעינה)
+function voiceFor(lang) {
+  if (!voices.length) loadVoices();
+  if (/^he/i.test(lang)) {
+    return voices.find(x => /^he/i.test(x.lang)) || null;
+  }
+  return voices.find(x => /en[-_]US/i.test(x.lang) && /samantha|female|zira|google/i.test(x.name))
+      || voices.find(x => /^en/i.test(x.lang)) || null;
 }
-if ("speechSynthesis" in window) { pickVoices(); speechSynthesis.onvoiceschanged = pickVoices; }
 
-function say(text, lang, voice, btn) {
+// הסרת ניקוד — מנועי הקראה רבים נכשלים על אותיות מנוקדות ולא משמיעים כלום
+const NIKUD = /[\u0591-\u05C7]/g;
+function stripNikud(s) { return s.replace(NIKUD, ""); }
+
+function say(text, lang, btn) {
   if (!("speechSynthesis" in window)) return;
   stopSound();
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang; u.rate = 0.78; u.pitch = 1.15;
-  if (voice) u.voice = voice;
+  const clean = /^he/i.test(lang) ? stripNikud(text) : text;
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang = lang; u.rate = 0.8; u.pitch = 1.12;
+  const v = voiceFor(lang);
+  if (v) u.voice = v;
   u.onstart = () => btn.classList.add("playing");
   u.onend   = () => btn.classList.remove("playing");
+  u.onerror = () => btn.classList.remove("playing");
   speechSynthesis.speak(u);
   flashBtn(btn, 1400);
 }
@@ -710,10 +724,10 @@ soundBtn.onclick = () => {
   animalView.classList.remove("wiggle"); void animalView.offsetWidth; animalView.classList.add("wiggle");
 };
 
-sayHeBtn.onclick = () => say(ANIMALS[idx].he, "he-IL", heVoice, sayHeBtn);
-sayBtn.onclick   = () => say(ANIMALS[idx].en, "en-US", enVoice, sayBtn);
+sayHeBtn.onclick = () => say(ANIMALS[idx].he, "he-IL", sayHeBtn);
+sayBtn.onclick   = () => say(ANIMALS[idx].en, "en-US", sayBtn);
 
-nameHeEl.addEventListener("click", () => say(ANIMALS[idx].he, "he-IL", heVoice, sayHeBtn));
+nameHeEl.addEventListener("click", () => say(ANIMALS[idx].he, "he-IL", sayHeBtn));
 
 animalView.addEventListener("click", e => {
   playAnimal(ANIMALS[idx]);
@@ -824,7 +838,7 @@ function guess(a, optEl) {
     gameFeedback.textContent = "כל הכבוד! 🎉";
     const r = optEl.getBoundingClientRect();
     sparkle(r.left + r.width / 2, r.top + r.height / 2);
-    say(gameAnswer.he, "he-IL", heVoice, sayHeBtn);
+    say(gameAnswer.he, "he-IL", sayHeBtn);
     setTimeout(newRound, 1500);
   } else {
     optEl.classList.add("wrong");
