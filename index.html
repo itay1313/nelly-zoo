@@ -446,14 +446,14 @@ async function playFile(filename) {
 
   if (soundBufs[filename]) {
     _startBuffer(c, soundBufs[filename]);
-    return;
+    return true;
   }
 
   loadingDot.style.display = "block";
 
   if (!soundFetch[filename]) {
     soundFetch[filename] = fetch("sounds/" + filename)
-      .then(r => r.arrayBuffer())
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.arrayBuffer(); })
       .then(arr => c.decodeAudioData(arr))
       .then(buf => { soundBufs[filename] = buf; return buf; })
       .catch(err => { console.warn("sound load failed:", filename, err); return null; });
@@ -461,7 +461,8 @@ async function playFile(filename) {
 
   const buf = await soundFetch[filename];
   loadingDot.style.display = "none";
-  if (buf) _startBuffer(c, buf);
+  if (buf) { _startBuffer(c, buf); return true; }
+  return false;
 }
 
 function _startBuffer(c, buf) {
@@ -709,6 +710,15 @@ function say(text, lang, btn) {
   flashBtn(btn, 1400);
 }
 
+// הקראת השם בעברית — קודם קובץ קול אמיתי (עובד בכל מכשיר),
+// ואם חסר/נכשל — נופלים חזרה לקול הסינתטי של הדפדפן
+async function sayHebrew(a, btn) {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  flashBtn(btn, 1300);
+  const played = await playFile("he/" + a.en.toLowerCase() + ".mp3");
+  if (!played) say(a.he, "he-IL", btn);
+}
+
 function flashBtn(btn, ms) {
   btn.classList.add("playing");
   setTimeout(() => btn.classList.remove("playing"), ms);
@@ -725,10 +735,10 @@ soundBtn.onclick = () => {
   animalView.classList.remove("wiggle"); void animalView.offsetWidth; animalView.classList.add("wiggle");
 };
 
-sayHeBtn.onclick = () => say(ANIMALS[idx].he, "he-IL", sayHeBtn);
+sayHeBtn.onclick = () => sayHebrew(ANIMALS[idx], sayHeBtn);
 sayBtn.onclick   = () => say(ANIMALS[idx].en, "en-US", sayBtn);
 
-nameHeEl.addEventListener("click", () => say(ANIMALS[idx].he, "he-IL", sayHeBtn));
+nameHeEl.addEventListener("click", () => sayHebrew(ANIMALS[idx], sayHeBtn));
 
 animalView.addEventListener("click", e => {
   playAnimal(ANIMALS[idx]);
@@ -839,7 +849,7 @@ function guess(a, optEl) {
     gameFeedback.textContent = "כל הכבוד! 🎉";
     const r = optEl.getBoundingClientRect();
     sparkle(r.left + r.width / 2, r.top + r.height / 2);
-    say(gameAnswer.he, "he-IL", sayHeBtn);
+    sayHebrew(gameAnswer, sayHeBtn);
     setTimeout(newRound, 1500);
   } else {
     optEl.classList.add("wrong");
