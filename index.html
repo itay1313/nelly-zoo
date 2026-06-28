@@ -52,9 +52,9 @@
 
   /* ---------- תוכן ---------- */
   header,.stage,.progress-wrap,.all-btn { position:relative; z-index:1; }
-  header { flex:0 0 auto; text-align:center; padding:12px 10px 4px; }
+  header { flex:0 0 auto; text-align:center; padding:clamp(6px,1.5vh,12px) 10px 4px; }
   header h1 {
-    font-size:clamp(24px,7vw,40px); color:#fff; font-weight:800; letter-spacing:1px;
+    font-size:clamp(22px,6vw,40px); color:#fff; font-weight:800; letter-spacing:1px;
     text-shadow:0 3px 0 #ff9ec4,0 4px 0 #f17fad,0 0 16px rgba(255,255,255,.5);
   }
   .paw { font-size:.85em; }
@@ -64,18 +64,18 @@
   .card {
     --tint:#fff3c4;
     background:linear-gradient(180deg,#ffffff 0%,var(--tint) 100%);
-    border:5px solid #fff; border-radius:38px;
+    border:5px solid #fff; border-radius:clamp(24px,5vw,38px);
     box-shadow:0 16px 0 rgba(0,0,0,.07),0 18px 36px rgba(60,60,120,.25);
-    width:100%; max-width:440px; padding:14px 16px 18px;
+    width:100%; max-width:440px; max-height:100%; padding:clamp(10px,2vh,16px) 16px clamp(12px,2vh,18px);
     text-align:center; position:relative;
-    display:flex; flex-direction:column; align-items:center; gap:6px;
+    display:flex; flex-direction:column; align-items:center; gap:clamp(3px,1vh,6px);
     transition:background .35s;
   }
 
   /* ---------- תמונת החיה ---------- */
   .animal-view {
     position:relative;
-    width:min(220px,58vw); height:min(220px,58vw);
+    width:min(220px,52vw,30vh); height:min(220px,52vw,30vh);
     border-radius:26px; overflow:hidden;
     background:rgba(0,0,0,.04);
     cursor:pointer; flex-shrink:0;
@@ -109,20 +109,20 @@
   }
 
   .name-he {
-    font-size:clamp(28px,8vw,44px); font-weight:800; color:#3a3a5a;
+    font-size:clamp(26px,7vw,44px); font-weight:800; color:#3a3a5a;
     cursor:pointer; border-radius:12px; padding:2px 10px;
     transition:background .15s;
   }
   .name-he:active { background:rgba(0,0,0,.06); }
   .name-he-hint { font-size:13px; color:#aaa; margin-top:-4px; }
-  .name-en { font-size:clamp(18px,5.5vw,28px); font-weight:700; color:#ff5d9e; direction:ltr; }
+  .name-en { font-size:clamp(16px,5vw,28px); font-weight:700; color:#ff5d9e; direction:ltr; }
 
   /* ---------- כפתורים ---------- */
-  .actions { display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; justify-content:center; }
+  .actions { display:flex; gap:clamp(6px,1.6vw,10px); margin-top:4px; flex-wrap:wrap; justify-content:center; }
   .btn {
     border:none; font-family:inherit; font-weight:800; cursor:pointer;
-    border-radius:999px; padding:13px 18px; font-size:clamp(15px,4vw,19px);
-    display:inline-flex; align-items:center; gap:8px;
+    border-radius:999px; padding:clamp(9px,1.6vh,13px) clamp(12px,3.4vw,18px); font-size:clamp(14px,3.6vw,19px);
+    display:inline-flex; align-items:center; gap:6px;
     transition:transform .08s,box-shadow .08s;
   }
   .btn:active { transform:translateY(5px); }
@@ -166,8 +166,8 @@
     width:0%;
   }
 
-  .all-btn { flex:0 0 auto; margin:0 auto 12px; background:#fff; border:none; border-radius:999px;
-    padding:11px 24px; font-family:inherit; font-size:17px; font-weight:800; color:#3a3a5a;
+  .all-btn { flex:0 0 auto; margin:0 auto clamp(8px,2vh,12px); background:#fff; border:none; border-radius:999px;
+    padding:clamp(8px,1.4vh,11px) 24px; font-family:inherit; font-size:clamp(15px,4vw,17px); font-weight:800; color:#3a3a5a;
     box-shadow:0 6px 0 rgba(0,0,0,.12); cursor:pointer; }
   .all-btn:active { transform:translateY(3px); box-shadow:0 2px 0 rgba(0,0,0,.12); }
 
@@ -234,8 +234,8 @@
 
   /* ---------- משחק "מי אני?" ---------- */
   .game-btn {
-    flex:0 0 auto; margin:0 auto 4px; border:none; border-radius:999px;
-    padding:11px 26px; font-family:inherit; font-size:18px; font-weight:800; color:#fff;
+    flex:0 0 auto; margin:0 auto 6px; border:none; border-radius:999px;
+    padding:clamp(8px,1.4vh,11px) 26px; font-family:inherit; font-size:clamp(15px,4.2vw,18px); font-weight:800; color:#fff;
     background:linear-gradient(180deg,#ff8fc0,#ff4f9a);
     box-shadow:0 6px 0 #d62e78,0 8px 16px rgba(0,0,0,.2); cursor:pointer;
     transition:transform .08s,box-shadow .08s;
@@ -281,6 +281,23 @@
   .game-feedback {
     min-height:30px; font-size:22px; font-weight:800; color:#fff;
     padding:8px 0 14px; text-shadow:0 2px 3px rgba(0,0,0,.22); text-align:center;
+  }
+
+  /* ---------- רספונסיביות: מסכים נמוכים ---------- */
+  @media (max-height:680px) {
+    header { padding:4px 10px 2px; }
+    .animal-view { width:min(180px,46vw,26vh); height:min(180px,46vw,26vh); }
+    .name-he { font-size:clamp(22px,6vw,34px); }
+    .name-en { font-size:clamp(14px,4.4vw,22px); }
+    .progress-track { height:8px; }
+  }
+  /* ---------- רספונסיביות: נחיתה (landscape) ---------- */
+  @media (max-height:520px) and (orientation:landscape) {
+    body { overflow-y:auto; }
+    .stage { align-items:flex-start; }
+    .card { flex-direction:row; flex-wrap:wrap; max-width:680px; gap:10px 18px; padding:12px 16px; }
+    .animal-view { width:min(150px,38vw,60vh); height:min(150px,38vw,60vh); }
+    .actions { width:100%; }
   }
 </style>
 </head>
